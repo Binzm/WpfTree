@@ -13,15 +13,15 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Name="TreeStackPanel" />
         <WrapPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="创建构造树" Margin="15" Click="ButtonBaseCreateTree_OnClick" />
-            <Button Content="删除构造树" Margin="15" Click="ButtonBaseRemoveTree_OnClick" />
-            <Button Content="添加单个子节点" Margin="15" Click="ButtonBase_OnClick" />
-            <Button Content="添加多个子节点" Margin="15" Click="ButtonBaseMulti_OnClick" />
-            <Button Content="在选中节点下添加单个节点" Margin="15" Click="ButtonBaseSingleAddNodeBySelectNode_OnClick" />
-            <Button Content="在选中节点下添加多个节点" Margin="15" Click="ButtonBaseMultiAddNodeBySelectNode_OnClick" />
+            <Button Content="创建构造树" Margin="13" Click="ButtonBaseCreateTree_OnClick" />
+            <Button Content="删除构造树" Margin="13" Click="ButtonBaseRemoveTree_OnClick" />
+            <Button Content="添加单个子节点" Margin="13" Click="ButtonBase_OnClick" />
+            <Button Content="添加多个子节点" Margin="13" Click="ButtonBaseMulti_OnClick" />
+            <Button Content="在选中节点下添加单个节点" Margin="13" Click="ButtonBaseSingleAddNodeBySelectNode_OnClick" />
+            <Button Content="在选中节点下添加多个节点" Margin="13" Click="ButtonBaseMultiAddNodeBySelectNode_OnClick" />
 
-            <Button Content="删除选中节点" Margin="15" Click="ButtonBaseRemoveSelectNodeItem_OnClick" />
-            <Button Content="删除所有Check选中节点" Margin="15" Click="ButtonBaseRemoveCheckItem_OnClick" />
+            <Button Content="删除选中节点" Margin="13" Click="ButtonBaseRemoveSelectNodeItem_OnClick" />
+            <Button Content="删除所有Check选中节点" Margin="13" Click="ButtonBaseRemoveCheckItem_OnClick" />
         </WrapPanel>
     </Grid>
 </Window>
