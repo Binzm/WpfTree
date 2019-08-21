@@ -1,0 +1,14 @@
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\bin\Debug\TreeLibrary.dll
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\bin\Debug\TreeLibrary.pdb
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\Control\AutoComplete.baml
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\Control\AutoComplete.g.cs
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeControl.g.cs
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary_MarkupCompile.cache
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary_MarkupCompile.lref
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\Generic.baml
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeControl.baml
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary.g.resources
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary.dll
+C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary.pdb

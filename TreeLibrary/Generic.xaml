@@ -1,0 +1,148 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:wpfControlsLibrary="clr-namespace:ICMS.WPFControlsLibrary"
+                    xmlns:control1="clr-namespace:TreeLibrary.Control" 
+                    xmlns:treeLibrary="clr-namespace:TreeLibrary" >
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <BitmapImage x:Key="IDS_WpfTheme_SEARCHACT" UriSource="Images/xSearch_hov_act.png" />
+    <BitmapImage x:Key="IDS_WpfTheme_SEARCHNOR" UriSource="Images/xSearch_nor.png" />
+
+    <Style x:Key="IDS.SkinButton.NoneDisableImage" TargetType="{x:Type control1:SkinButton}">
+        <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type control1:SkinButton}">
+                    <Grid>
+                        <Image Name="PART_IMG" Stretch="Uniform"
+                                       Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=NorImage}" />
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="UIElement.IsMouseOver" Value="True">
+                            <Setter TargetName="PART_IMG"
+                                            Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=HovImage}"
+                                            Property="Image.Source" />
+                        </Trigger>
+                        <Trigger Property="ButtonBase.IsPressed" Value="True">
+                            <Setter TargetName="PART_IMG"
+                                            Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ActImage}"
+                                            Property="Image.Source" />
+                        </Trigger>
+                        <Trigger Property="UIElement.IsEnabled" Value="False">
+                            <Setter Property="UIElement.Opacity" Value="0.7" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type wpfControlsLibrary:AutoComplete}"  TargetType="{x:Type wpfControlsLibrary:AutoComplete}">
+        <Style.Resources>
+            <ControlTemplate x:Key="ID_CLIENT_TEMP_SEARCHTOGBTN" TargetType="{x:Type ToggleButton}">
+                <Grid Background="#FF008064">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="24" />
+                        <ColumnDefinition Width="5" />
+                    </Grid.ColumnDefinitions>
+                    <control1:SkinButton Name="PART_SearchBtn" Grid.Column="1" Width="23" Height="19"
+                            ActImage="{DynamicResource IDS_WpfTheme_SEARCHACT}"
+                            HovImage="{DynamicResource IDS_WpfTheme_SEARCHACT}"
+                            NorImage="{DynamicResource IDS_WpfTheme_SEARCHNOR}"
+                            Style="{StaticResource IDS.SkinButton.NoneDisableImage}" />
+                </Grid>
+            </ControlTemplate>
+            <ControlTemplate x:Key="ID_CLIENT_CMBTXT" TargetType="{x:Type TextBox}">
+                <ScrollViewer Name="PART_ContentHost" Width="{TemplateBinding FrameworkElement.ActualWidth}"
+                        Background="{TemplateBinding Control.Background}" Focusable="False" />
+            </ControlTemplate>
+            <SolidColorBrush x:Key="ID_CLIENT_BRUSH_CMBBG" Color="#FF008064" />
+            <SolidColorBrush x:Key="ID_CLIENT_BRUSH_CMBBORDER" Color="#FF008064" />
+        </Style.Resources>
+        <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource   Mode= FindAncestor,  AncestorType={x:Type treeLibrary:TreeControl}}, Path=AutoCompleteIsShow,Converter={StaticResource BooleanToVisibilityConverter}}"></Setter>
+        <Setter Property="Control.Background" Value="#FF008064" />
+        <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
+        <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling" />
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type wpfControlsLibrary:AutoComplete}">
+                    <Grid Background="{TemplateBinding Control.Background}">
+                        <ToggleButton Name="ToggleButton" ClickMode="Press" Focusable="False"
+                                Template="{StaticResource ID_CLIENT_TEMP_SEARCHTOGBTN}"
+                                IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                        <ContentPresenter Name="ContentSite" Margin="5,1,16,3" HorizontalAlignment="Left"
+                                VerticalAlignment="Center" Content="{TemplateBinding ComboBox.SelectionBoxItem}"
+                                ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ItemsControl.ItemTemplateSelector}"
+                                IsHitTestVisible="False" />
+                        <TextBox Name="PART_EditableTextBox" Margin="5,1,30,3" VerticalAlignment="Center"
+                                VerticalContentAlignment="Center" Background="{TemplateBinding Control.Background}"
+                                CaretBrush="#FFFFFFFF" Focusable="True" Foreground="#FFFFFFFF"
+                                IsReadOnly="{TemplateBinding ComboBox.IsReadOnly}"
+                                Template="{StaticResource ID_CLIENT_CMBTXT}" Visibility="Hidden" Style="{x:Null}" />
+                        <Label Name="LB_Notice" Foreground="#FF808080" Margin="5,1,30,3" />
+                        <Popup Name="Popup" AllowsTransparency="True" Focusable="False"
+                                IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}" Placement="Bottom"
+                                PopupAnimation="Slide">
+                            <Grid Name="DropDown" MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
+                                    MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}" SnapsToDevicePixels="True">
+                                <Border Name="DropDownBorder" Background="{TemplateBinding Control.Background}"
+                                        BorderBrush="{StaticResource ID_CLIENT_BRUSH_CMBBORDER}" BorderThickness="1" />
+                                <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ItemsControl.HasItems" Value="False">
+                            <Setter TargetName="DropDownBorder" Property="FrameworkElement.MinHeight" Value="95" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.IsGrouping" Value="True">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+                        </Trigger>
+                        <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="True">
+                            <Setter TargetName="DropDownBorder" Property="FrameworkElement.Margin" Value="0,1,0,0" />
+                        </Trigger>
+                        <Trigger Property="ComboBox.IsEditable" Value="True">
+                            <Setter Property="Control.IsTabStop" Value="False" />
+                            <Setter TargetName="PART_EditableTextBox" Property="UIElement.Visibility" Value="Visible" />
+                            <Setter TargetName="ContentSite" Property="UIElement.Visibility" Value="Hidden" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+    <!--x:Key="{x:Type nodeItem:TwosNodeItem}"-->
+    <!--<Style  TargetType="{x:Type nodeItem:TwosNodeItem}">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type nodeItem:TwosNodeItem}">
+                    <Grid Name="PART_Grid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="3" />
+                            <ColumnDefinition Width="18" />
+                            <ColumnDefinition Width="3" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox  Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Path=IsChecked}"
+                                   IsTabStop="False" Focusable="False" Visibility="{Binding Path=ShowCheckBox}"/>
+                        <Image Name="icon" Grid.Column="2" Height="18" Width="18" HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch" Source="{Binding IsOnline, Converter={StaticResource IconConv}}" />
+                        <TextBlock Name="txtName"  Foreground="{Binding IsOnline, Converter={StaticResource foreGroundConv}}" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                   Text="{TemplateBinding baseItem1:TreeNodeItem.Text}" FontSize="{DynamicResource GeneralFontSize}"/>
+                    </Grid>
+                </ControlTemplate>
+              
+            </Setter.Value>
+        </Setter>
+    </Style>-->
+
+</ResourceDictionary>
