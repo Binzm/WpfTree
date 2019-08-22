@@ -35,6 +35,7 @@ namespace TreeTest
             InitializeComponent();
 
             Compose();
+
             #region NodeOperator
 
             //treeControl.NodeOperator += TreeNodeOperator;
@@ -157,19 +158,20 @@ namespace TreeTest
 
         private void ButtonBaseSingleAddNodeBySelectNode_OnClick(object sender, RoutedEventArgs e)
         {
-            if(treeControl.TreeSelectedNode==null)
+            if (treeControl.TreeSelectedNode == null)
                 return;
 
             var addNodeModel = new TwosTreeNodeModel()
             {
-                Data = new DataModel { Id = new Random().Next(100, 100000).ToString(), Name = "2222" },
-                Name = "在选中节点下添加的子节点"+ new Random().Next(100, 100000).ToString()
+                Data = new DataModel {Id = new Random().Next(100, 100000).ToString(), Name = "2222"},
+                Name = "在选中节点下添加的子节点" + new Random().Next(100, 100000).ToString()
             };
             Application.Current.Dispatcher.Invoke(() =>
             {
                 treeControl.TreeHelper.AddNodeModelToItem(addNodeModel, treeControl.TreeSelectedNode);
             });
         }
+
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var addNodeModel = new ChannelsTreeNodeModel()
@@ -279,8 +281,6 @@ namespace TreeTest
                 LoadDataAndTemplate.CurrentItemTypeAndStyleList.Clear();
             itemTypeList.ForEach(f =>
             {
-            
-
                 LoadDataAndTemplate.CurrentItemTypeAndStyleList.Add(itemTypeList[itemTypeList.IndexOf(f)],
                     styleList[itemTypeList.IndexOf(f)]);
             });
@@ -291,12 +291,19 @@ namespace TreeTest
             #region Add Menu RouteHandler
 
             var routeHandler = new Dictionary<RoutedEvent, Delegate>();
-            var delegateEvent = new RoutedEventHandler((o, args) => { });
-            routeHandler.Add(MenuItem.ClickEvent, delegateEvent);
+            var delegateAllExpandedSubEvent = new RoutedEventHandler((o, args) => { AllExpandedSubNode(); });
+            routeHandler.Add(MenuItem.ClickEvent, delegateAllExpandedSubEvent);
+
+            var allCombineRouteRouteHandler = new Dictionary<RoutedEvent, Delegate>();
+            var delegateAllCombineSubEvent = new RoutedEventHandler((o, args) => { AllCombineSubNode(); });
+            allCombineRouteRouteHandler.Add(MenuItem.ClickEvent, delegateAllCombineSubEvent);
+
             var menuRouteHandler = new Dictionary<string, Dictionary<RoutedEvent, Delegate>>
             {
-                {"单击对象菜单", routeHandler}
+                {"全部展开", routeHandler},
+                {"全部合并", allCombineRouteRouteHandler}
             };
+
 
             LoadDataAndTemplate.CurrentLoadMenuRouteHandler = menuRouteHandler;
 
@@ -306,7 +313,8 @@ namespace TreeTest
 
             #region 显示搜索框
 
-            treeControl.AutoCompleteIsShow = true; 
+            treeControl.AutoCompleteIsShow = true;
+
             #endregion
 
             ObservableCollection<TreeNodeModel> iteModels = new ObservableCollection<TreeNodeModel>
@@ -353,6 +361,7 @@ namespace TreeTest
             TreeStackPanel.Children.Add(treeControl);
         }
 
+
         private void ButtonBaseRemoveSelectNodeItem_OnClick(object sender, RoutedEventArgs e)
         {
             treeControl.RemoveSelectNodeItem();
@@ -361,6 +370,33 @@ namespace TreeTest
         private void ButtonBaseRemoveCheckItem_OnClick(object sender, RoutedEventArgs e)
         {
             treeControl.RemoveAllChcekedNodeItem();
+        }
+
+
+        private void AllCombineSubNode(TreeNodeModel operateNode = null)
+        {
+            var thisChangeNode = operateNode ?? treeControl.TreeSelectedNode;
+            thisChangeNode.IsExpanded = false;
+            if (thisChangeNode.SubNodes.Count > 0)
+            {
+                foreach (var treeNodeModel in thisChangeNode.SubNodes)
+                {
+                    AllCombineSubNode(treeNodeModel);
+                }
+            }
+        }
+
+        private void AllExpandedSubNode(TreeNodeModel operateNode = null)
+        {
+            var thisChangeNode = operateNode ?? treeControl.TreeSelectedNode;
+            thisChangeNode.IsExpanded = true;
+            if (thisChangeNode.SubNodes.Count > 0)
+            {
+                foreach (var treeNodeModel in thisChangeNode.SubNodes)
+                {
+                    AllExpandedSubNode(treeNodeModel);
+                }
+            }
         }
 
 
@@ -501,7 +537,8 @@ namespace TreeTest
                         };
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            treeControl.TreeHelper.AddNodeModelListToItem(addNodelist, treeControl.TreeSelectedNode);
+                            treeControl.TreeHelper.AddNodeModelListToItem(addNodelist,
+                                treeControl.TreeSelectedNode);
                         });
                     });
             }

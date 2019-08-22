@@ -109,6 +109,7 @@ namespace TreeLibrary
 
         public void InitHierarchicalDataTemplateResource()
         {
+
             if (_hierarchicalDataTemplateResources == null)
                 return;
             foreach (var dicItem in _hierarchicalDataTemplateResources)
@@ -146,7 +147,7 @@ namespace TreeLibrary
                     new NodeSelectedHandler(TreeNodeItem_NodeCheck));
                 nodeItemFrameworkElement.SetValue(UIElement.AllowDropProperty, true);
                 nodeItemFrameworkElement.SetValue(TreeNodeItem.TextProperty, new Binding("Name"));
-                nodeItemFrameworkElement.SetValue(TreeNodeItem.IsShowMenuProperty, new Binding("IsShowMenu"));
+                //nodeItemFrameworkElement.SetValue(TreeNodeItem.IsShowMenuProperty, new Binding("IsShowMenu"));
                 var isCheckBinding = new Binding("IsChecked")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged

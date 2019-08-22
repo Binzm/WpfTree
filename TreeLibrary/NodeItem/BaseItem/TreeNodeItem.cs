@@ -22,11 +22,11 @@ namespace TreeLibrary.NodeItem.BaseItem
 
         public readonly static DependencyProperty IsExpandedProperty;
 
-        public readonly static DependencyProperty IsShowMenuProperty;
+        //public readonly static DependencyProperty IsShowMenuProperty;
 
        
 
-        private static TreeNodeItem selectedNode;
+        //private static TreeNodeItem selectedNode;
         private static TreeNodeItem selectedRightNode;
 
        
@@ -49,11 +49,11 @@ namespace TreeLibrary.NodeItem.BaseItem
             set => base.SetValue(TreeNodeItem.IsSelectedProperty, value);
         }
 
-        public bool IsShowMenu
-        {
-            get => (bool) base.GetValue(TreeNodeItem.IsShowMenuProperty);
-            set => base.SetValue(TreeNodeItem.IsShowMenuProperty, value);
-        }
+        //public bool IsShowMenu
+        //{
+        //    get => (bool) base.GetValue(TreeNodeItem.IsShowMenuProperty);
+        //    set => base.SetValue(TreeNodeItem.IsShowMenuProperty, value);
+        //}
 
         public TreeNodeModel Model
         {
@@ -86,8 +86,8 @@ namespace TreeLibrary.NodeItem.BaseItem
                 typeof(TreeNodeItem), new PropertyMetadata(false));
             TreeNodeItem.IsExpandedProperty = DependencyProperty.Register("IsExpanded", typeof(bool),
                 typeof(TreeNodeItem), new PropertyMetadata(false));
-            TreeNodeItem.IsShowMenuProperty = DependencyProperty.Register("IsShowMenu", typeof(bool),
-                typeof(TreeNodeItem), new PropertyMetadata(false));
+            //TreeNodeItem.IsShowMenuProperty = DependencyProperty.Register("IsShowMenu", typeof(bool),
+            //    typeof(TreeNodeItem), new PropertyMetadata(false));
             FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeNodeItem),
                 new FrameworkPropertyMetadata(typeof(TreeNodeItem)));
         }

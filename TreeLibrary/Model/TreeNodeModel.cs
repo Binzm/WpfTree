@@ -10,7 +10,7 @@ namespace TreeLibrary.Model
         private bool _isExpanded;
         private bool _isSelected;
 
-        private Boolean? _isChecked;
+        private bool? _isChecked;
         private string _name = string.Empty;
         private Visibility _showCheckBox = Visibility.Visible;
         private string _textBoxForeground;
@@ -133,7 +133,7 @@ namespace TreeLibrary.Model
         //}
 
 
-        public Boolean? IsChecked
+        public bool? IsChecked
         {
             get => this._isChecked;
             set

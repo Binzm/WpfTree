@@ -12,3 +12,17 @@ C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\
 C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary.csproj.CoreCompileInputs.cache
 C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary.dll
 C:\Users\Administrator.BF-201906060744\source\repos\TreeLibrary\TreeLibrary\obj\Debug\TreeLibrary.pdb
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\bin\Debug\TreeLibrary.dll
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\bin\Debug\TreeLibrary.pdb
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\Control\AutoComplete.baml
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\Control\AutoComplete.g.cs
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeControl.g.cs
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary_MarkupCompile.cache
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary_MarkupCompile.lref
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\Generic.baml
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeControl.baml
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.g.resources
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.csproj.CoreCompileInputs.cache
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.dll
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.pdb

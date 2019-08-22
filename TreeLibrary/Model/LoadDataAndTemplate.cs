@@ -180,7 +180,7 @@ namespace TreeLibrary.Model
                 checkBoxElementFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
                 checkBoxElementFactory.SetValue(System.Windows.Controls.Control.IsTabStopProperty, false);
                 checkBoxElementFactory.SetValue(UIElement.FocusableProperty, false);
-
+                //checkBoxElementFactory.SetValue(System.Windows.Controls.Primitives.ToggleButton.IsThreeStateProperty, false);
 
                 checkBoxElementFactory.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty,
                     new Binding("IsChecked"));
