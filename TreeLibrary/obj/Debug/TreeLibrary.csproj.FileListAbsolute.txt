@@ -26,3 +26,4 @@ D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.g.resources
 D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.csproj.CoreCompileInputs.cache
 D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.dll
 D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.pdb
+D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\TreeLibrary.csprojAssemblyReference.cache

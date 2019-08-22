@@ -7,7 +7,6 @@ namespace TreeLibrary.Extensions
     /// </summary>
     public static class StringObject
     {
-
         /// <summary>
         /// 获取中文字符的首英文字符
         /// </summary>

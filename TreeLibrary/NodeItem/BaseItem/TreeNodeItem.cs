@@ -22,20 +22,14 @@ namespace TreeLibrary.NodeItem.BaseItem
 
         public readonly static DependencyProperty IsExpandedProperty;
 
-        //public readonly static DependencyProperty IsShowMenuProperty;
 
-       
-
-        //private static TreeNodeItem selectedNode;
-        private static TreeNodeItem selectedRightNode;
-
-       
+        private static TreeNodeItem _selectedRightNode;
 
 
         /// <summary>
         /// 树节点控件的复选框
         /// </summary>
-        private CheckBox _NodeCheckBox = null;
+        private CheckBox _nodeCheckBox = null;
 
         public bool IsExpanded
         {
@@ -49,11 +43,6 @@ namespace TreeLibrary.NodeItem.BaseItem
             set => base.SetValue(TreeNodeItem.IsSelectedProperty, value);
         }
 
-        //public bool IsShowMenu
-        //{
-        //    get => (bool) base.GetValue(TreeNodeItem.IsShowMenuProperty);
-        //    set => base.SetValue(TreeNodeItem.IsShowMenuProperty, value);
-        //}
 
         public TreeNodeModel Model
         {
@@ -80,14 +69,12 @@ namespace TreeLibrary.NodeItem.BaseItem
                 typeof(TreeNodeItem), new PropertyMetadata(null));
             TreeNodeItem.TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(TreeNodeItem),
                 new PropertyMetadata(string.Empty));
-            TreeNodeItem.IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool),
+            TreeNodeItem.IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool?),
                 typeof(TreeNodeItem), new PropertyMetadata(false));
             TreeNodeItem.IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool),
                 typeof(TreeNodeItem), new PropertyMetadata(false));
             TreeNodeItem.IsExpandedProperty = DependencyProperty.Register("IsExpanded", typeof(bool),
                 typeof(TreeNodeItem), new PropertyMetadata(false));
-            //TreeNodeItem.IsShowMenuProperty = DependencyProperty.Register("IsShowMenu", typeof(bool),
-            //    typeof(TreeNodeItem), new PropertyMetadata(false));
             FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeNodeItem),
                 new FrameworkPropertyMetadata(typeof(TreeNodeItem)));
         }
@@ -97,41 +84,28 @@ namespace TreeLibrary.NodeItem.BaseItem
         /// </summary>
         public override void OnApplyTemplate()
         {
-
             #region Node_CheckBox的check值改变事件（单击）
 
-            this._NodeCheckBox = base.Template.FindName("Node_CheckBox", this) as CheckBox;
-            if (this._NodeCheckBox != null)
+            this._nodeCheckBox = base.Template.FindName("Node_CheckBox", this) as CheckBox;
+            if (this._nodeCheckBox != null)
             {
-                _NodeCheckBox.Click += this.NodeCheckBox_Clicked;
-            } 
-            #endregion
-
-        }
-
-
-        private static void NodeStateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            TreeNodeItem treeNodeItem = sender as TreeNodeItem;
-            if (treeNodeItem == null)
-            {
-                return;
+                _nodeCheckBox.Click += this.NodeCheckBox_Clicked;
             }
 
-            treeNodeItem.StateChanged();
+            #endregion
         }
 
         protected virtual void StateChanged()
         {
         }
 
-        protected void UIElement_DoubleClick(MouseButtonEventArgs e)
+        protected void UIElement_DoubleClick() //MouseButtonEventArgs e
         {
             var args = new NodeDoubleClickArgs(NodeDoubleClickEvent, this.Model);
             this.RaiseEvent(args);
         }
 
-        protected void UIElement_Click(MouseButtonEventArgs e)
+        protected void UIElement_Click() //MouseButtonEventArgs e
         {
             this.IsSelected = true;
             var args = new NodeSelectedArgs(NodeSelectedEvent, this.Model, true);
@@ -156,7 +130,7 @@ namespace TreeLibrary.NodeItem.BaseItem
                     var timer2 = (Timer) this.Tag;
                     timer2.Stop();
                     timer2.Dispose();
-                    UIElement_Click(e);
+                    UIElement_Click(); //e
                 })));
                 timer.Start();
                 this.Tag = timer;
@@ -169,7 +143,7 @@ namespace TreeLibrary.NodeItem.BaseItem
                 {
                     timer.Stop();
                     timer.Dispose();
-                    UIElement_DoubleClick(e);
+                    UIElement_DoubleClick(); //e
                 }
             }
         }
@@ -194,56 +168,29 @@ namespace TreeLibrary.NodeItem.BaseItem
 
             this.IsSelected = true;
 
-            TreeNodeItem.selectedRightNode = this;
-
+            TreeNodeItem._selectedRightNode = this;
 
             var rightButtonSelectedArgs = new NodeSelectedArgs(NodeRightButtonSelectedEvent, this.Model, true);
             this.RaiseEvent(rightButtonSelectedArgs);
 
             var argsNodeSelectedArgs = new NodeSelectedArgs(NodeSelectedEvent, this.Model, true);
             this.RaiseEvent(argsNodeSelectedArgs);
-            //NodeRightButtonSelectedHandler nodeSelectedHandler = this.NodeRightButtonSelected;
-            //if (nodeSelectedHandler == null)
-            //{
-            //    return;
-            //}
-
-            // nodeSelectedHandler(this, new NodeSelectedArgs(this.Model, true));
         }
-
 
 
         public static readonly RoutedEvent NodeSelectedEvent = EventManager.RegisterRoutedEvent("NodeSelected",
             RoutingStrategy.Bubble, typeof(NodeSelectedHandler), typeof(TreeNodeItem));
-        //public event NodeSelectedHandler NodeSelected
-        //{
-        //    add => this.AddHandler(TreeNodeItem.NodeSelectedEvent, (System.Delegate) value, false);
-        //    remove => this.RemoveHandler(TreeNodeItem.NodeSelectedEvent, (System.Delegate) value);
-        //}
-
 
         public static readonly RoutedEvent NodeDoubleClickEvent = EventManager.RegisterRoutedEvent(
             "NodeDoubleClick",
             RoutingStrategy.Bubble, typeof(NodeDoubleClickHandler), typeof(TreeNodeItem));
-        //public event NodeDoubleClickHandler NodeDoubleClickProperty
-        //{
-        //    add => AddHandler(NodeDoubleClickEvent, value);
-        //    remove => RemoveHandler(NodeDoubleClickEvent, value);
-        //}
 
         public static readonly RoutedEvent NodeRightButtonSelectedEvent = EventManager.RegisterRoutedEvent(
             "NodeRightButtonSelected",
             RoutingStrategy.Bubble, typeof(NodeSelectedHandler), typeof(TreeNodeItem));
-        //public event NodeSelectedHandler NodeRightButtonSelected
-        //{
-        //    add => AddHandler(NodeRightButtonSelectedEvent, value);
-        //    remove => RemoveHandler(NodeRightButtonSelectedEvent, value);
-        //}
 
         public static readonly RoutedEvent NodeCheckBoxCheckEvent =
             EventManager.RegisterRoutedEvent("NodeCheckBoxCheck", RoutingStrategy.Bubble, typeof(NodeSelectedHandler),
                 typeof(TreeNodeItem));
-        
-
     }
 }

@@ -180,11 +180,10 @@ namespace TreeLibrary.Model
                 checkBoxElementFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
                 checkBoxElementFactory.SetValue(System.Windows.Controls.Control.IsTabStopProperty, false);
                 checkBoxElementFactory.SetValue(UIElement.FocusableProperty, false);
-                //checkBoxElementFactory.SetValue(System.Windows.Controls.Primitives.ToggleButton.IsThreeStateProperty, false);
-
                 checkBoxElementFactory.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty,
-                    new Binding("IsChecked"));
-                checkBoxElementFactory.SetBinding(UIElement.VisibilityProperty, new Binding("ShowCheckBox"));
+                    new Binding(nameof(TreeNodeModel.IsChecked)));
+                checkBoxElementFactory.SetBinding(UIElement.VisibilityProperty,
+                    new Binding(nameof(TreeNodeModel.ShowCheckBox)));
                 checkBoxElementFactory.SetValue(Grid.ColumnProperty, 0);
                 gridElementFactory.AppendChild(checkBoxElementFactory);
 
@@ -197,7 +196,8 @@ namespace TreeLibrary.Model
                     imageElementFactory.SetValue(FrameworkElement.HorizontalAlignmentProperty,
                         HorizontalAlignment.Stretch);
                     imageElementFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-                    var sourceBinding = new Binding("IconImage") {Converter = new ImageNameToPhotoPathConverter()};
+                    var sourceBinding = new Binding(nameof(TreeNodeModel.IconImage))
+                        {Converter = new ImageNameToPhotoPathConverter()};
                     imageElementFactory.SetValue(Image.SourceProperty, sourceBinding);
                     imageElementFactory.SetValue(Grid.ColumnProperty, 2);
                     gridElementFactory.AppendChild(imageElementFactory);
@@ -210,7 +210,8 @@ namespace TreeLibrary.Model
                 textBlockElementFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
                 textBlockElementFactory.SetValue(TextBlock.TextProperty,
                     new TemplateBindingExtension(TreeNodeItem.TextProperty));
-                var textBlockForeground = new Binding("TextBoxForeground") {Converter = new ForegroundConverter()};
+                var textBlockForeground = new Binding(nameof(TreeNodeModel.TextBoxForeground))
+                    {Converter = new ForegroundConverter()};
                 textBlockElementFactory.SetValue(TextBlock.ForegroundProperty, textBlockForeground);
 
                 textBlockElementFactory.SetValue(TextBlock.FontSizeProperty, 14D);

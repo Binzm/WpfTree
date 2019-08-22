@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -26,9 +27,21 @@ namespace TreeTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        private CompositionContainer container = null;
+        private CompositionContainer _container = null;
 
-        private TreeControl treeControl;
+        private TreeControl _treeControl;
+        private Timer _timer;
+        private readonly Random _random = new Random();
+
+        private readonly string[] _colorStrings = new string[]
+        {
+            "AliceBlue",
+            "DarkGreen",
+            "AntiqueWhite",
+            "LightSeaGreen",
+            "Aqua",
+            "Navy"
+        };
 
         public MainWindow()
         {
@@ -51,77 +64,14 @@ namespace TreeTest
             #region Task 
 
             Task.Delay(10000)
-                .ContinueWith(task => { treeControl.TreeHelper.TreeAllNodels[1].TextBoxForeground = "red"; });
-
-            //Task.Delay(3000).ContinueWith(task =>
-            //{
-            //    for (int i = 0; i < 50; i++)
-            //    {
-            //        var addNodeModel = new ChannelsTreeNodeModel()
-            //        {
-            //            Data = new DataModel { Id =i.ToString(), Name = "2222" },
-            //            Name = "666",
-            //            IconImage = "xsearch_hov_act"
-            //        };
-            //        var mountPointModel = new TwosTreeNodeModel()
-            //        {
-            //            Data = new DataModel { Id = "9", Name = "2222" },
-            //            Name = "1111"
-            //        };
-            //        Application.Current.Dispatcher.Invoke(() =>
-            //        {
-            //            treeControl.TreeHelper.AddNodeModelToItem(addNodeModel, mountPointModel);
-            //        });
-            //    }
-
-            //});
-
-
-            //Task.Delay(3000).ContinueWith(task =>
-            //{
-            //    for (int i = 0; i < 10; i++)
-            //    {
-            //        var addNodelist = new List<TreeNodeModel>()
-            //        {
-            //            new TwosTreeNodeModel()
-            //            {
-            //                Data = new DataModel {Id = new Random().Next(0, 5000).ToString(), Name = "2222"},
-            //                Name = "123"
-            //            },
-            //            new TwosTreeNodeModel()
-            //            {
-            //                Data = new DataModel {Id = new Random().Next(5000, 10000).ToString(), Name = "2222"},
-            //                Name = "234"
-            //            },
-            //            new TwosTreeNodeModel()
-            //            {
-            //                Data = new DataModel {Id = new Random().Next(10000, 15000).ToString(), Name = "2222"},
-            //                Name = "345"
-            //            },
-            //            new TwosTreeNodeModel()
-            //            {
-            //                Data = new DataModel {Id = new Random().Next(15000, 20000).ToString(), Name = "2222"},
-            //                Name = "456"
-            //            }
-            //        };
-            //        var mountPointModel = new TwosTreeNodeModel()
-            //        {
-            //            Data = new DataModel {Id = "7", Name = "2222"},
-            //            Name = "1111"
-            //        };
-            //        Application.Current.Dispatcher.Invoke(() =>
-            //        {
-            //            treeControl.TreeHelper.AddNodeModelListToItem(addNodelist, mountPointModel);
-            //        });
-            //    }
-            //});
+                .ContinueWith(task => { _treeControl.TreeHelper.TreeAllNodels[1].TextBoxForeground = "red"; });
 
             #endregion
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            container?.Dispose();
+            _container?.Dispose();
             base.OnClosing(e);
         }
 
@@ -151,42 +101,45 @@ namespace TreeTest
             if (dir.Exists)
             {
                 var catalog = new DirectoryCatalog(dir.FullName, "TreeLibrary.dll");
-                container = new CompositionContainer(catalog);
-                container.ComposeParts(this);
+                _container = new CompositionContainer(catalog);
+                _container.ComposeParts(this);
             }
         }
 
         private void ButtonBaseSingleAddNodeBySelectNode_OnClick(object sender, RoutedEventArgs e)
         {
-            if (treeControl.TreeSelectedNode == null)
+            if (_treeControl == null || _treeControl.TreeSelectedNode == null)
                 return;
 
             var addNodeModel = new TwosTreeNodeModel()
             {
-                Data = new DataModel {Id = new Random().Next(100, 100000).ToString(), Name = "2222"},
-                Name = "在选中节点下添加的子节点" + new Random().Next(100, 100000).ToString()
+                Data = new DataModel {Id = _random.Next(100, 100000).ToString()},
+                Name = "在选中节点下添加的子节点" + _random.Next(100, 100000).ToString()
             };
             Application.Current.Dispatcher.Invoke(() =>
             {
-                treeControl.TreeHelper.AddNodeModelToItem(addNodeModel, treeControl.TreeSelectedNode);
+                _treeControl.TreeHelper.AddNodeModelToItem(addNodeModel, _treeControl.TreeSelectedNode);
             });
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
+            if (_treeControl == null)
+                return;
+
             var addNodeModel = new ChannelsTreeNodeModel()
             {
-                Data = new DataModel {Id = new Random().Next(100, 100000).ToString(), Name = "2222"},
-                Name = new Random().Next(100, 100000).ToString()
+                Data = new DataModel {Id = _random.Next(100, 100000).ToString()},
+                Name = _random.Next(100, 100000).ToString()
             };
             var mountPointModel = new TwosTreeNodeModel()
             {
-                Data = new DataModel {Id = "9", Name = "2222"},
+                Data = new DataModel {Id = "9"},
                 Name = "1111"
             };
             Application.Current.Dispatcher.Invoke(() =>
             {
-                treeControl.TreeHelper.AddNodeModelToItem(addNodeModel, mountPointModel);
+                _treeControl.TreeHelper.AddNodeModelToItem(addNodeModel, mountPointModel);
             });
         }
 
@@ -195,30 +148,30 @@ namespace TreeTest
         {
             for (int i = 0; i < 30; i++)
             {
-                Task.Delay(new Random().Next(0, 10000))
+                Task.Delay(_random.Next(0, 10000))
                     .ContinueWith(task =>
                     {
                         var addNodelist = new List<TreeNodeModel>()
                         {
                             new TwosTreeNodeModel()
                             {
-                                Data = new DataModel {Id = new Random().Next(0, 5000).ToString(), Name = "2222"},
-                                Name = new Random().Next(0, 5000).ToString()
+                                Data = new DataModel {Id = _random.Next(0, 5000).ToString()},
+                                Name = _random.Next(0, 5000).ToString()
                             },
                             new TwosTreeNodeModel()
                             {
-                                Data = new DataModel {Id = new Random().Next(5000, 10000).ToString(), Name = "2222"},
-                                Name = new Random().Next(5000, 10000).ToString()
+                                Data = new DataModel {Id = _random.Next(5000, 10000).ToString()},
+                                Name = _random.Next(5000, 10000).ToString()
                             },
                             new TwosTreeNodeModel()
                             {
-                                Data = new DataModel {Id = new Random().Next(10000, 15000).ToString(), Name = "2222"},
-                                Name = new Random().Next(10000, 15000).ToString()
+                                Data = new DataModel {Id = _random.Next(10000, 15000).ToString()},
+                                Name = _random.Next(10000, 15000).ToString()
                             },
                             new TwosTreeNodeModel()
                             {
-                                Data = new DataModel {Id = new Random().Next(15000, 20000).ToString(), Name = "2222"},
-                                Name = new Random().Next(15000, 20000).ToString()
+                                Data = new DataModel {Id = _random.Next(15000, 20000).ToString()},
+                                Name = _random.Next(15000, 20000).ToString()
                             }
                         };
                         var mountPointModel = new TwosTreeNodeModel()
@@ -228,7 +181,7 @@ namespace TreeTest
                         };
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            treeControl.TreeHelper.AddNodeModelListToItem(addNodelist, mountPointModel);
+                            _treeControl.TreeHelper.AddNodeModelListToItem(addNodelist, mountPointModel);
                         });
                     });
             }
@@ -237,18 +190,20 @@ namespace TreeTest
 
         private void ButtonBaseRemoveTree_OnClick(object sender, RoutedEventArgs e)
         {
-            treeControl = null;
+            _treeControl = null;
+
             //container?.Dispose();
             TreeStackPanel.Children.Clear();
+            if (_timer != null)
+                _timer.Stop();
         }
 
         private void ButtonBaseCreateTree_OnClick(object sender, RoutedEventArgs e)
         {
-            if (treeControl != null)
+            if (_treeControl != null)
                 return;
 
             //Compose();
-
 
             #region 加载自定义Model 和Item
 
@@ -262,7 +217,6 @@ namespace TreeTest
             LoadDataAndTemplate.CurrentLoadModelType = LoadModelType.UserDefined;
 
             #endregion
-
 
             #region 加载自定义样式
 
@@ -287,7 +241,6 @@ namespace TreeTest
 
             #endregion
 
-
             #region Add Menu RouteHandler
 
             var routeHandler = new Dictionary<RoutedEvent, Delegate>();
@@ -309,73 +262,97 @@ namespace TreeTest
 
             #endregion
 
-            treeControl = container.GetExportedValue<TreeControl>();
+            _treeControl = _container.GetExportedValue<TreeControl>();
 
             #region 显示搜索框
 
-            treeControl.AutoCompleteIsShow = true;
+            _treeControl.AutoCompleteIsShow = true;
 
             #endregion
 
-            ObservableCollection<TreeNodeModel> iteModels = new ObservableCollection<TreeNodeModel>
+            var iteModels = new ObservableCollection<TreeNodeModel>
             {
                 new TwosTreeNodeModel()
                 {
-                    Data = new DataModel {Id = "12", Name = "2222"},
+                    Data = new DataModel {Id = "12"},
                     Name = "祖节点1"
                 },
                 new TwosTreeNodeModel
                 {
-                    Data = new DataModel {Id = "11", Name = "2222"},
+                    Data = new DataModel {Id = "11"},
                     Name = "拥有一级子节点的祖节点2"
                 },
                 new TwosTreeNodeModel
                 {
-                    Data = new DataModel {Id = "10", Name = "2222"},
+                    Data = new DataModel {Id = "10"},
                     Name = "祖节点3"
                 },
                 new TwosTreeNodeModel
                 {
-                    Data = new DataModel {Id = "9", Name = "2222"},
+                    Data = new DataModel {Id = "9"},
                     Name = "添加单个子集的节点"
                 },
                 new TwosTreeNodeModel
                 {
-                    Data = new DataModel {Id = "8", Name = "2222"},
+                    Data = new DataModel {Id = "8"},
                     Name = "祖节点4"
                 },
                 new TwosTreeNodeModel
                 {
-                    Data = new DataModel {Id = "7", Name = "2222"},
+                    Data = new DataModel {Id = "7"},
                     Name = "添加多个子集的节点"
                 }
             };
             iteModels[1].AddSubNode(new ThreeLevelTreeNodeModel()
             {
-                Data = new DataModel {Id = "1", Name = "2222"},
+                Data = new DataModel {Id = "1"},
                 Name = "一级子节点"
             });
 
-            treeControl.SetItemsSource(iteModels);
+            _treeControl.SetItemsSource(iteModels);
 
-            TreeStackPanel.Children.Add(treeControl);
+            TreeStackPanel.Children.Add(_treeControl);
+            ToChangeTreeNodeProperty();
         }
 
+        private void ToChangeTreeNodeProperty()
+        {
+            _timer = new Timer
+            {
+                Enabled = true,
+                Interval = 500
+            };
+            _timer.Start();
+            _timer.Elapsed += Timer1_Elapsed;
+        }
+
+        private void Timer1_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            this._treeControl.TreeHelper
+                .TreeAllNodels[_random.Next(0, this._treeControl.TreeHelper.TreeAllNodels.Count)]
+                .TextBoxForeground = _colorStrings[_random.Next(0, _colorStrings.Length)];
+        }
 
         private void ButtonBaseRemoveSelectNodeItem_OnClick(object sender, RoutedEventArgs e)
         {
-            treeControl.RemoveSelectNodeItem();
+            if (_treeControl == null)
+                return;
+
+            _treeControl.RemoveSelectNodeItem();
         }
 
         private void ButtonBaseRemoveCheckItem_OnClick(object sender, RoutedEventArgs e)
         {
-            treeControl.RemoveAllChcekedNodeItem();
+            if (_treeControl == null)
+                return;
+
+            _treeControl.RemoveAllChcekedNodeItem();
         }
 
 
         private void AllCombineSubNode(TreeNodeModel operateNode = null)
         {
-            var thisChangeNode = operateNode ?? treeControl.TreeSelectedNode;
+            var thisChangeNode = operateNode ?? _treeControl.TreeSelectedNode;
             thisChangeNode.IsExpanded = false;
             if (thisChangeNode.SubNodes.Count > 0)
             {
@@ -388,7 +365,7 @@ namespace TreeTest
 
         private void AllExpandedSubNode(TreeNodeModel operateNode = null)
         {
-            var thisChangeNode = operateNode ?? treeControl.TreeSelectedNode;
+            var thisChangeNode = operateNode ?? _treeControl.TreeSelectedNode;
             thisChangeNode.IsExpanded = true;
             if (thisChangeNode.SubNodes.Count > 0)
             {
@@ -435,13 +412,14 @@ namespace TreeTest
                 checkBoxElementFactory.SetValue(FrameworkElement.HorizontalAlignmentProperty,
                     HorizontalAlignment.Center);
                 checkBoxElementFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
-                checkBoxElementFactory.SetValue(System.Windows.Controls.Control.IsTabStopProperty, false);
+                checkBoxElementFactory.SetValue(Control.IsTabStopProperty, false);
                 checkBoxElementFactory.SetValue(UIElement.FocusableProperty, false);
 
 
                 checkBoxElementFactory.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty,
-                    new Binding("IsChecked"));
-                checkBoxElementFactory.SetBinding(UIElement.VisibilityProperty, new Binding("ShowCheckBox"));
+                    new Binding(nameof(TreeNodeModel.IsChecked)));
+                checkBoxElementFactory.SetBinding(UIElement.VisibilityProperty,
+                    new Binding(nameof(TreeNodeModel.ShowCheckBox)));
                 checkBoxElementFactory.SetValue(Grid.ColumnProperty, 0);
                 gridElementFactory.AppendChild(checkBoxElementFactory);
 
@@ -454,7 +432,8 @@ namespace TreeTest
                     imageElementFactory.SetValue(FrameworkElement.HorizontalAlignmentProperty,
                         HorizontalAlignment.Stretch);
                     imageElementFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Stretch);
-                    var sourceBinding = new Binding("IconImage") {Converter = new ImageNameToPhotoPathConverter()};
+                    var sourceBinding = new Binding(nameof(TreeNodeModel.IconImage))
+                        {Converter = new ImageNameToPhotoPathConverter()};
                     imageElementFactory.SetValue(Image.SourceProperty, sourceBinding);
                     imageElementFactory.SetValue(Grid.ColumnProperty, 2);
                     gridElementFactory.AppendChild(imageElementFactory);
@@ -467,7 +446,8 @@ namespace TreeTest
                 textBlockElementFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
                 textBlockElementFactory.SetValue(TextBlock.TextProperty,
                     new TemplateBindingExtension(TreeNodeItem.TextProperty));
-                var textBlockForeground = new Binding("TextBoxForeground") {Converter = new ForegroundConverter()};
+                var textBlockForeground = new Binding(nameof(TreeNodeModel.TextBoxForeground))
+                    {Converter = new ForegroundConverter()};
                 textBlockElementFactory.SetValue(TextBlock.ForegroundProperty, new SolidColorBrush(Colors.Red));
 
                 textBlockElementFactory.SetValue(TextBlock.FontSizeProperty, 14D);
@@ -504,41 +484,41 @@ namespace TreeTest
 
         private void ButtonBaseMultiAddNodeBySelectNode_OnClick(object sender, RoutedEventArgs e)
         {
-            if (treeControl.TreeSelectedNode == null)
+            if (_treeControl == null || _treeControl.TreeSelectedNode == null)
                 return;
 
-            for (var i = 0; i < 3000; i++)
+            for (var i = 0; i < 30; i++)
             {
-                Task.Delay(new Random().Next(0, 10000))
+                Task.Delay(_random.Next(0, 5000))
                     .ContinueWith(task =>
                     {
                         var addNodelist = new List<TreeNodeModel>()
                         {
                             new TwosTreeNodeModel()
                             {
-                                Data = new DataModel {Id = new Random().Next(0, 5000).ToString(), Name = "2222"},
-                                Name = new Random().Next(0, 5000).ToString()
+                                Data = new DataModel {Id = _random.Next(0, 5000).ToString()},
+                                Name = _random.Next(0, 5000).ToString()
                             },
                             new TwosTreeNodeModel()
                             {
-                                Data = new DataModel {Id = new Random().Next(5000, 10000).ToString(), Name = "2222"},
-                                Name = new Random().Next(5000, 10000).ToString()
+                                Data = new DataModel {Id = _random.Next(5000, 10000).ToString()},
+                                Name = _random.Next(5000, 10000).ToString()
                             },
                             new TwosTreeNodeModel()
                             {
-                                Data = new DataModel {Id = new Random().Next(10000, 15000).ToString(), Name = "2222"},
-                                Name = new Random().Next(10000, 15000).ToString()
+                                Data = new DataModel {Id = _random.Next(10000, 15000).ToString()},
+                                Name = _random.Next(10000, 15000).ToString()
                             },
                             new TwosTreeNodeModel()
                             {
-                                Data = new DataModel {Id = new Random().Next(15000, 20000).ToString(), Name = "2222"},
-                                Name = new Random().Next(15000, 20000).ToString()
+                                Data = new DataModel {Id = _random.Next(15000, 20000).ToString()},
+                                Name = _random.Next(15000, 20000).ToString()
                             }
                         };
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            treeControl.TreeHelper.AddNodeModelListToItem(addNodelist,
-                                treeControl.TreeSelectedNode);
+                            _treeControl.TreeHelper.AddNodeModelListToItem(addNodelist,
+                                _treeControl.TreeSelectedNode);
                         });
                     });
             }

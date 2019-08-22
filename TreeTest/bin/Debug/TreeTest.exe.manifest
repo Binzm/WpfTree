@@ -42,36 +42,36 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TreeLibrary.dll" size="56320">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TreeLibrary.dll" size="55808">
       <assemblyIdentity name="TreeLibrary" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>G/L5AFCk7xoSKG8PPyGb3hvxDFzWiqUtgfuLn6fKvwE=</dsig:DigestValue>
+        <dsig:DigestValue>phtdPI/yB7jYgC/5eP0Pi73ngOJF5h0hd/Xv8vaOe24=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TreeTest.exe" size="22544">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TreeTest.exe" size="23056">
       <assemblyIdentity name="TreeTest" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>r9tj4LL7A/nPRE/fqUwyTPrarGd17YD9hEfAgovDmnA=</dsig:DigestValue>
+        <dsig:DigestValue>v+T710Jv2G0sjX2mEkrm7wP8WMhw9MUknkip4xS0O8o=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="TreeTest.exe.config" size="187">
+  <file name="TreeTest.exe.config" size="179">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>xm4bo26HQ0LNVwz1vdPYtzhkpMnp2AI5i+f0b+OahTI=</dsig:DigestValue>
+      <dsig:DigestValue>ol1gyhBrenphBGtnv7qwgv8zHMZ1TIlc4hJOlSUx4RA=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

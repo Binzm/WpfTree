@@ -39,22 +39,6 @@ namespace TreeLibrary.NodeItem.BaseItem
             NodeList = itemSource;
         }
 
-        public void GetAllCheckedItem(ObservableCollection<TreeNodeModel> resultCol,
-            ObservableCollection<TreeNodeModel> subNode)
-        {
-            foreach (TreeNodeModel model in subNode ?? NodeList)
-            {
-                if (true == model.IsChecked)
-                {
-                    resultCol.Add(model);
-                }
-
-                if (model.SubNodes.Count>0)
-                {
-                    GetAllCheckedItem(resultCol, model.SubNodes);
-                }
-            }
-        }
 
         public void GetAppointedPatternNode(string pattern, ObservableCollection<TreeNodeModel> resultCol,
             ObservableCollection<TreeNodeModel> subNode)
@@ -66,7 +50,7 @@ namespace TreeLibrary.NodeItem.BaseItem
                     resultCol.Add(model);
                 }
 
-                if (model.SubNodes.Count>0)
+                if (model.SubNodes.Count > 0)
                 {
                     GetAppointedPatternNode(pattern, resultCol, model.SubNodes);
                 }
@@ -114,6 +98,7 @@ namespace TreeLibrary.NodeItem.BaseItem
                 }
             }
         }
+
         /// <summary>
         /// 在树节点上挂载多个个子节点
         /// </summary>
@@ -126,10 +111,10 @@ namespace TreeLibrary.NodeItem.BaseItem
             {
                 var treeNode = GetNodeByNodeList(mountPointModel, null);
                 if (treeNode != null)
-                { 
+                {
                     foreach (var nodeItem in addNodeItems)
                     {
-                        if(TreeAllNodels.ToList().FindIndex(f => f.Data.Id == nodeItem.Data.Id)>=0)
+                        if (TreeAllNodels.ToList().FindIndex(f => f.Data.Id == nodeItem.Data.Id) >= 0)
                             continue;
                         treeNode.AddSubNode(nodeItem);
                         TreeAllNodels.Add(nodeItem);
@@ -138,7 +123,6 @@ namespace TreeLibrary.NodeItem.BaseItem
             }
         }
 
-      
 
         private TreeNodeModel GetNodeByNodeList(TreeNodeModel modelItem,
             ObservableCollection<TreeNodeModel> treeNodeModels)
@@ -147,19 +131,15 @@ namespace TreeLibrary.NodeItem.BaseItem
             {
                 if (modelItem.Data.Id == treeNodeModel.Data.Id)
                     return treeNodeModel;
-                if (treeNodeModel.SubNodes.Count>0)
+                if (treeNodeModel.SubNodes.Count > 0)
                 {
-                  var treeNodeModelResult =  GetNodeByNodeList(modelItem, treeNodeModel.SubNodes);
-                  if (treeNodeModelResult != null)
-                      return treeNodeModelResult;
+                    var treeNodeModelResult = GetNodeByNodeList(modelItem, treeNodeModel.SubNodes);
+                    if (treeNodeModelResult != null)
+                        return treeNodeModelResult;
                 }
             }
+
             return null;
         }
-
-        
-
-        //public event NodeOperatorHandler NodeOperator;
-        //public event ResourceTreeDataLoadedHandler ResourceTreeDataLoadedCompleted;
     }
 }

@@ -18,7 +18,7 @@ namespace TreeLibrary.NodeItem
 
         public string ExitImg
         {
-            get => (string)base.GetValue(ChannelsNodeItem.ExitImgProperty);
+            get => (string) base.GetValue(ChannelsNodeItem.ExitImgProperty);
             set => base.SetValue(ChannelsNodeItem.ExitImgProperty, value);
         }
 
@@ -30,8 +30,8 @@ namespace TreeLibrary.NodeItem
 
         public ChannelsNodeItem()
         {
-
         }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -43,7 +43,6 @@ namespace TreeLibrary.NodeItem
                 this._parthGrid.MouseLeftButtonDown += this.PART_Grid_MouseLeftButtonDown;
             }
         }
-
 
 
         private void PART_Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -64,7 +63,8 @@ namespace TreeLibrary.NodeItem
                         Math.Abs(position.Y - DragStartPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                     {
                         IsDraging = true;
-                        DragDropEffects de = DragDrop.DoDragDrop(lv, new DragDropArgs(base.Model), DragDropEffects.Copy); //zjm
+                        DragDropEffects de =
+                            DragDrop.DoDragDrop(lv, new DragDropArgs(base.Model), DragDropEffects.Copy); //zjm
                         IsDraging = false;
                     }
                 }

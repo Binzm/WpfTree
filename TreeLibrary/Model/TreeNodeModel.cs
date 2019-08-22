@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace TreeLibrary.Model
@@ -15,10 +14,8 @@ namespace TreeLibrary.Model
         private Visibility _showCheckBox = Visibility.Visible;
         private string _textBoxForeground;
         private string _iconImage;
-        private TreeNodeModel _dummyChild;
+        private readonly TreeNodeModel _dummyChild;
 
-        //private readonly bool _isLazyLoad = false;
-        //private bool _canMultiSelect;
 
         private readonly ObservableCollection<TreeNodeModel> _subNodes = new ObservableCollection<TreeNodeModel>();
 
@@ -75,11 +72,10 @@ namespace TreeLibrary.Model
             {
                 this._isExpanded = value;
                 this.OnPropertyChanged();
-                if (this.HasDummyChild)
-                {
-                    this.SubNodes.Remove(_dummyChild);
-                    this.LoadSubNodes();
-                }
+                if (!this.HasDummyChild)
+                    return;
+                this.SubNodes.Remove(_dummyChild);
+                this.LoadSubNodes();
             }
         }
 
@@ -106,32 +102,6 @@ namespace TreeLibrary.Model
             }
         }
 
-        //public bool IsShowMenu
-        //{
-        //    get => this._isShowMenu;
-        //    set
-        //    {
-        //        if (value != this._isShowMenu)
-        //        {
-        //            this._isShowMenu = value;
-        //            this.OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
-        //public bool CanMultiSelect
-        //{
-        //    get => this._canMultiSelect;
-        //    set
-        //    {
-        //        if (this._canMultiSelect != value)
-        //        {
-        //            this._canMultiSelect = value;
-        //            this.OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
 
         public bool? IsChecked
         {
@@ -142,6 +112,7 @@ namespace TreeLibrary.Model
                 {
                     this._isChecked = value;
                     this.OnPropertyChanged();
+
                     if (this._isChecked == true)
                     {
                         if (this._subNodes != null)
@@ -209,8 +180,6 @@ namespace TreeLibrary.Model
             }
         }
 
-        
-
 
         public TreeNodeModel(bool isLazyLoadSubNodes)
         {
@@ -240,9 +209,6 @@ namespace TreeLibrary.Model
         public ObservableCollection<TreeNodeModel> SubNodes
         {
             get => this._subNodes;
-            set
-            {
-            }
         }
     }
 }

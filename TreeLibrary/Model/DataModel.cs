@@ -9,5 +9,4 @@
         public string Name;
         public object AbstractData;
     }
-
 }

@@ -21,7 +21,7 @@ namespace TreeLibrary
     /// <summary>
     /// UserControl1.xaml 的交互逻辑
     /// </summary>
-    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [PartCreationPolicy(CreationPolicy.Any)]
     [Export(typeof(TreeControl))]
     public partial class TreeControl : UserControl, INotifyPropertyChanged
     {
@@ -109,12 +109,11 @@ namespace TreeLibrary
 
         public void InitHierarchicalDataTemplateResource()
         {
-
             if (_hierarchicalDataTemplateResources == null)
                 return;
             foreach (var dicItem in _hierarchicalDataTemplateResources)
             {
-                TreeView.Resources.Add(dicItem.Key, dicItem.Value);
+                this.Resources.Add(dicItem.Key, dicItem.Value);
             }
 
             var generic = new ResourceDictionary()
@@ -383,9 +382,9 @@ namespace TreeLibrary
         {
         }
 
-        
 
-        private void cmbLocation_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void cmbLocation_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             if (this.cmbLocation.SelectedItem != null)
             {
                 TreeNodeModel searchNode = (TreeNodeModel) ((ComboBoxItem) this.cmbLocation.SelectedItem).Tag;
@@ -534,5 +533,7 @@ namespace TreeLibrary
 
             TreeView.ContextMenu = menu;
         }
+
+       
     }
 }

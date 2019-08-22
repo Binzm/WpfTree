@@ -1,5 +1,4 @@
-﻿
-namespace ICMS.WPFControlsLibrary
+﻿namespace ICMS.WPFControlsLibrary
 {
     /// <summary>
     /// 自动检索实体
@@ -25,8 +24,8 @@ namespace ICMS.WPFControlsLibrary
 
         public string DisplayName
         {
-            get => this._displayText; 
-            set  =>this._displayText = value; 
+            get => this._displayText;
+            set => this._displayText = value;
         }
 
 
@@ -39,8 +38,8 @@ namespace ICMS.WPFControlsLibrary
 
         public object ValueText
         {
-            get =>  this._valueText; 
-            set => this._valueText = value; 
+            get => this._valueText;
+            set => this._valueText = value;
         }
 
 
