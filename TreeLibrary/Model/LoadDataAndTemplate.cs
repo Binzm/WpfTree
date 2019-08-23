@@ -35,7 +35,16 @@ namespace TreeLibrary.Model
         public static Dictionary<Type, Type> CurrentUserDefaultModelTypeAndItemType;
         public static Dictionary<Type, Style> CurrentItemTypeAndStyleList;
 
+        public static bool TreeNodeIsAllowDrop;
+
         public static Dictionary<string, Dictionary<RoutedEvent, System.Delegate>> CurrentLoadMenuRouteHandler;
+
+
+
+        public bool GetIsAllowDrop()
+        {
+            return TreeNodeIsAllowDrop;
+        }
 
         public Dictionary<Type, Type> GetLogicDictionary()
         {

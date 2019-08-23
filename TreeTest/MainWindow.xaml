@@ -9,6 +9,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="100" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Name="TreeStackPanel" />
         <WrapPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -21,5 +22,8 @@
             <Button Content="删除选中节点" Margin="13" Click="ButtonBaseRemoveSelectNodeItem_OnClick" />
             <Button Content="删除所有Check选中节点" Margin="13" Click="ButtonBaseRemoveCheckItem_OnClick" />
         </WrapPanel>
+        <Grid Name="TextTreeDrag" Grid.Row="2">
+
+        </Grid>
     </Grid>
 </Window>

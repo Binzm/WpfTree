@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TreeLibrary.dll" size="55808">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TreeLibrary.dll" size="75776">
       <assemblyIdentity name="TreeLibrary" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>phtdPI/yB7jYgC/5eP0Pi73ngOJF5h0hd/Xv8vaOe24=</dsig:DigestValue>
+        <dsig:DigestValue>A5q9pgpGMH+D+E2+aVMTBZRuhqZ5Rmms7cUXP5PF9uQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -61,7 +61,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>v+T710Jv2G0sjX2mEkrm7wP8WMhw9MUknkip4xS0O8o=</dsig:DigestValue>
+        <dsig:DigestValue>weFD+JvWJbJELa4Jj9cWxCE5u5tgyatgXXqdr18ak94=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

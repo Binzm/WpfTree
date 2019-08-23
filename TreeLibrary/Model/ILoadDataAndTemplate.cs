@@ -6,6 +6,7 @@ namespace TreeLibrary.Model
 {
     public interface ILoadDataAndTemplate
     {
+        bool GetIsAllowDrop();
         Dictionary<Type, Type> GetLogicDictionary();
         void SetStyle(List<Type> modelItemList, ResourceDictionary controlResources);
         Dictionary<string, Dictionary<RoutedEvent, System.Delegate>> GetMenuRouteAndHandlerDictionary();

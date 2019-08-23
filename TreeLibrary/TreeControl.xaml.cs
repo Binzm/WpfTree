@@ -7,12 +7,14 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using TreeLibrary.Args;
 using TreeLibrary.Delegate;
+using TreeLibrary.DragDropFramework;
 using TreeLibrary.Model;
 using TreeLibrary.NodeItem.BaseItem;
 
@@ -21,16 +23,16 @@ namespace TreeLibrary
     /// <summary>
     /// UserControl1.xaml 的交互逻辑
     /// </summary>
-    [PartCreationPolicy(CreationPolicy.Any)]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export(typeof(TreeControl))]
     public partial class TreeControl : UserControl, INotifyPropertyChanged
     {
         // private ObservableCollection<TreeNodeModel> _treeNodeModels;
 
-
         private Dictionary<DataTemplateKey, HierarchicalDataTemplate> _hierarchicalDataTemplateResources;
 
         private Dictionary<Type, Type> _modelTyeAndItemTypeDictionary;
+
 
         //private TreeNodeModel _selectNodeModel;
 
@@ -38,7 +40,12 @@ namespace TreeLibrary
 
         public TreeHelper TreeHelper = new TreeHelper();
 
-
+        private readonly FileDropConsumer _fileDropDataConsumer =
+            new FileDropConsumer(new string[]
+            {
+                "FileDrop",
+                "FileNameW",
+            });
         //public TreeNodeModel SelectNodeModel
         //{
         //    get => _selectNodeModel;
@@ -49,11 +56,19 @@ namespace TreeLibrary
         //    }
         //}
 
+        protected bool IsDragDrop;
         private bool _mIsMouseDown;
         private Point _mStartPoint;
 
         public static readonly DependencyProperty AutoCompleteIsShowProperty;
+        public static readonly DependencyProperty AllowDropProperty;
 
+
+        public bool IsAllowDrop
+        {
+            get => (bool) GetValue(TreeControl.AllowDropProperty);
+            set => SetValue(TreeControl.AllowDropProperty, value);
+        }
         public bool AutoCompleteIsShow
         {
             get => (bool) GetValue(TreeControl.AutoCompleteIsShowProperty);
@@ -85,10 +100,12 @@ namespace TreeLibrary
                 _modelTyeAndItemTypeDictionary = loadDataAndTemplate.GetLogicDictionary();
                 loadDataAndTemplate.SetStyle(_modelTyeAndItemTypeDictionary.Values.ToList(), this.Resources);
                 _menuRouteAndHandlerDictionary = loadDataAndTemplate.GetMenuRouteAndHandlerDictionary();
+                this.IsAllowDrop = loadDataAndTemplate.GetIsAllowDrop();
             }
             else
             {
                 LoadModelTypeAndItemType();
+                this.IsAllowDrop = false;
             }
 
             LoadHierarchicalDataTemplate();
@@ -96,6 +113,75 @@ namespace TreeLibrary
             base.DataContext = this.TreeHelper;
             CollectionChangedEventManager.AddHandler(TreeHelper.TreeAllNodels, TreeNodeItem_NodeOperator);
             AddMenuItem();
+
+
+
+
+
+            if (!this.IsAllowDrop)
+                return;
+
+            this.TreeView.PreviewMouseUp += TreePreviewMouseUp;
+            this.TreeView.MouseLeave += TreeMouseLeave;
+            this.TreeView.PreviewMouseMove += TreePreviewMouseMove;
+            this.TreeView.DragOver += TreeDragOver;
+
+            //TreeViewDataProvider<ItemsControl, TreeViewItem> treeViewDataProvider =
+            //    new TreeViewDataProvider<ItemsControl, TreeViewItem>("TreeViewItem");
+            //TreeViewDataConsumer<ItemsControl, TreeViewItem> treeViewDataConsumer =
+            //    new TreeViewDataConsumer<ItemsControl, TreeViewItem>(new string[] { "TreeViewItem" });
+            //ListBoxItemToTreeViewItem<ListBox, ListBoxItem> listBoxItemToTreeViewItem =
+            //    new ListBoxItemToTreeViewItem<ListBox, ListBoxItem>(new string[] { "ListBoxItemObject" });
+            //DragManager dragHelperTreeView0 = new DragManager(TreeView, treeViewDataProvider);
+            //DropManager dropHelperTreeView0 = new DropManager(TreeView,
+            //    new IDataConsumer[] {
+            //        treeViewDataConsumer,
+            //        listBoxItemToTreeViewItem,
+            //        _fileDropDataConsumer,
+            //    });
+        }
+
+        private void TreeDragOver(object sender, DragEventArgs e)
+        {
+            NodeDragOver?.Invoke(sender, e);
+        }
+
+        private void TreePreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            var treeViewItems = sender as TreeView;
+            if (e.LeftButton == MouseButtonState.Pressed && !IsDragDrop)
+            {
+                if (e.LeftButton == MouseButtonState.Pressed && !IsDragDrop)
+                {
+                    Point position = e.GetPosition(null);
+
+                    if (Math.Abs(position.X - _mStartPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                        Math.Abs(position.Y - _mStartPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
+                    {
+                        if ((e.OriginalSource as TextBlock) == null)
+                            return;
+
+                        IsDragDrop = true;
+                        DragDropEffects de =
+                            DragDrop.DoDragDrop(treeViewItems,
+                                new DragDropArgs((e.OriginalSource as TextBlock).DataContext as TreeNodeModel),
+                                DragDropEffects.Copy);
+                        IsDragDrop = false;
+                    }
+                }
+            }
+
+            NodePreviewMouseMove?.Invoke(sender, e);
+        }
+
+        private void TreeMouseLeave(object sender, MouseEventArgs e)
+        {
+            NodeMouseLeave?.Invoke(sender, e);
+        }
+
+        private void TreePreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            NodePreviewMouseUp?.Invoke(sender, e);
         }
 
         static TreeControl()
@@ -103,6 +189,7 @@ namespace TreeLibrary
             AutoCompleteIsShowProperty =
                 DependencyProperty.Register("AutoCompleteIsShow", typeof(bool), typeof(TreeControl),
                     new PropertyMetadata(false));
+            AllowDropProperty=DependencyProperty.Register("IsAllowDrop", typeof(bool),typeof(TreeControl),new PropertyMetadata(false));
         }
 
         #region 初始化构造HierarchicalDataTemplate
@@ -191,9 +278,6 @@ namespace TreeLibrary
             this.TreeHelper.SetItemsSource(itemSource);
 
             InitAddAllTreeNodeModel(itemSource);
-
-            //SelectNodeModel = itemSource.FirstOrDefault();
-            //_ = SelectNodeModel == null ? null : SelectNodeModel.IsChecked = true;
         }
 
         /// <summary>
@@ -483,6 +567,11 @@ namespace TreeLibrary
         public event SearchContentSelectChangedHandler SearchContentSelectChanged;
         public event NodeOperatorHandler NodeOperator;
 
+        public event DragOverHandler NodeDragOver;
+        public event PreviewMouseMoveHandler NodePreviewMouseMove;
+        public event MouseLeaveHandler NodeMouseLeave;
+        public event PreviewMouseUpHandler NodePreviewMouseUp;
+
         #endregion
 
         #region 自定义方法
@@ -533,7 +622,5 @@ namespace TreeLibrary
 
             TreeView.ContextMenu = menu;
         }
-
-       
     }
 }

@@ -262,6 +262,12 @@ namespace TreeTest
 
             #endregion
 
+            #region 是否可拖拽以及事件
+
+            LoadDataAndTemplate.TreeNodeIsAllowDrop = true;
+
+            #endregion
+
             _treeControl = _container.GetExportedValue<TreeControl>();
 
             #region 显示搜索框
@@ -270,6 +276,7 @@ namespace TreeTest
 
             #endregion
 
+          
             var iteModels = new ObservableCollection<TreeNodeModel>
             {
                 new TwosTreeNodeModel()
@@ -309,6 +316,7 @@ namespace TreeTest
                 Name = "一级子节点"
             });
 
+           
             _treeControl.SetItemsSource(iteModels);
 
             TreeStackPanel.Children.Add(_treeControl);

@@ -59,7 +59,17 @@
     <Compile Include="Converter\ForegroundConverter.cs" />
     <Compile Include="Converter\ImageNameToPhotoPathConverter.cs" />
     <Compile Include="Delegate\TreeControldelegate.cs" />
+    <Compile Include="DragDropFramework\DataConsumerBase.cs" />
+    <Compile Include="DragDropFramework\DataProviderBase.cs" />
+    <Compile Include="DragDropFramework\DefaultAdorner.cs" />
+    <Compile Include="DragDropFramework\FileDropConsumer.cs" />
+    <Compile Include="DragDropFramework\IDataConsumer.cs" />
+    <Compile Include="DragDropFramework\IDataProvider.cs" />
+    <Compile Include="DragDropFramework\ListBoxData.cs" />
+    <Compile Include="DragDropFramework\ListBoxToTreeView.cs" />
+    <Compile Include="DragDropFramework\TreeViewData.cs" />
     <Compile Include="Extensions\StringObject.cs" />
+    <Compile Include="Extensions\Utilities.cs" />
     <Compile Include="Model\BaseNotifyPropertyChanged.cs" />
     <Compile Include="Model\DataModel.cs" />
     <Compile Include="Model\ILoadDataAndTemplate.cs" />

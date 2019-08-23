@@ -22,14 +22,15 @@
             KeyUp="cmbLocation_KeyUp"
             SelectionChanged="cmbLocation_SelectionChanged" Height="35" />
 
+        <!--MouseMove="TreeView_OnMouseMove"
+        PreviewMouseLeftButtonDown="TreeView_OnPreviewMouseLeftButtonDown"
+        PreviewMouseLeftButtonUp="TreeView_OnPreviewMouseLeftButtonUp"-->
+
         <TreeView Grid.Row="1" Name="TreeView"
-                  AllowDrop="True"
+                  AllowDrop="{Binding AutoCompleteIsShow}"
                   VirtualizingStackPanel.IsVirtualizing="False"
                   VirtualizingStackPanel.VirtualizationMode="Recycling"
-                  MouseMove="TreeView_OnMouseMove"
-                  PreviewMouseLeftButtonDown="TreeView_OnPreviewMouseLeftButtonDown"
-                  PreviewMouseLeftButtonUp="TreeView_OnPreviewMouseLeftButtonUp">
-
+                  >
             <TreeView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
                     <Setter Property="TreeViewItem.IsExpanded"
