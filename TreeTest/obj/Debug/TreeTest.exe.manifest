@@ -49,19 +49,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>A5q9pgpGMH+D+E2+aVMTBZRuhqZ5Rmms7cUXP5PF9uQ=</dsig:DigestValue>
+        <dsig:DigestValue>OOIAtjhR989h1gzwf8OLAvdmU98sYPBH/bqK0shUZzg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TreeTest.exe" size="23056">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TreeTest.exe" size="22016">
       <assemblyIdentity name="TreeTest" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>weFD+JvWJbJELa4Jj9cWxCE5u5tgyatgXXqdr18ak94=</dsig:DigestValue>
+        <dsig:DigestValue>naZiwT52U0e4t/c41rM3PkWe+gSNMH63bqYJERMMIiA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -33,16 +33,11 @@ namespace TreeLibrary.DragDropFramework
 
         public override DataConsumerActions DataConsumerActions
         {
-            get
-            {
-                return
+            get =>
                     DataConsumerActions.DragEnter |
                     DataConsumerActions.DragOver |
                     DataConsumerActions.Drop |
-                    //DragDropDataConsumerActions.DragLeave |
-
                     DataConsumerActions.None;
-            }
         }
 
         public override void DropTarget_DragEnter(object sender, DragEventArgs e)
@@ -89,8 +84,10 @@ namespace TreeLibrary.DragDropFramework
                 if (bDrop)
                 {
                     dataProvider.Unparent();
-                    newTvi = new TreeViewItem();
-                    newTvi.Header = dragSourceObject.Content;
+                    newTvi = new TreeViewItem
+                    {
+                        Header = dragSourceObject.Content
+                    };
                 }
 
                 if (dropTarget == null)

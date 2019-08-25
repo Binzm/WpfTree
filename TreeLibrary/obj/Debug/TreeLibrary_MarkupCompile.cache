@@ -4,7 +4,7 @@
 library
 C#
 .cs
-D:\ZhangbinWork\PulgIn\WpfTree\TreeLibrary\obj\Debug\
+D:\DevelopmentSourceCode\WpfTree\TreeLibrary\obj\Debug\
 TreeLibrary
 none
 false
@@ -16,5 +16,5 @@ DEBUG;TRACE
 15748832980
 Control\AutoComplete.xaml;Generic.xaml;TreeControl.xaml;
 
-True
+False
 

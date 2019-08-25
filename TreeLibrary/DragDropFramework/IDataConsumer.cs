@@ -87,12 +87,12 @@ namespace TreeLibrary.DragDropFramework
             // Hook only the events needed
             if (hookDragEnter == true)
                 this._dropTarget.DragEnter += new DragEventHandler(this.DropTarget_DragEnter);
-            //if (hookDragOver == true)
-            //    this._dropTarget.DragOver += new DragEventHandler(this.DropTarget_DragOver);
-            //if (hookDrop == true)
-            //    this._dropTarget.Drop += new DragEventHandler(this.DropTarget_Drop);
-            //if (hookDragLeave == true)
-            //    this._dropTarget.DragLeave += new DragEventHandler(this.DropTarget_DragLeave);
+            if (hookDragOver == true)
+                this._dropTarget.DragOver += new DragEventHandler(this.DropTarget_DragOver);
+            if (hookDrop == true)
+                this._dropTarget.Drop += new DragEventHandler(this.DropTarget_Drop);
+            if (hookDragLeave == true)
+                this._dropTarget.DragLeave += new DragEventHandler(this.DropTarget_DragLeave);
         }
 
         /// <summary>

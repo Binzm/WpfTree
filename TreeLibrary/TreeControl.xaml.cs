@@ -121,24 +121,24 @@ namespace TreeLibrary
             if (!this.IsAllowDrop)
                 return;
 
-            this.TreeView.PreviewMouseUp += TreePreviewMouseUp;
-            this.TreeView.MouseLeave += TreeMouseLeave;
-            this.TreeView.PreviewMouseMove += TreePreviewMouseMove;
-            this.TreeView.DragOver += TreeDragOver;
+            //this.TreeView.PreviewMouseUp += TreePreviewMouseUp;
+            //this.TreeView.MouseLeave += TreeMouseLeave;
+            //this.TreeView.PreviewMouseMove += TreePreviewMouseMove;
+            //this.TreeView.DragOver += TreeDragOver;
 
-            //TreeViewDataProvider<ItemsControl, TreeViewItem> treeViewDataProvider =
-            //    new TreeViewDataProvider<ItemsControl, TreeViewItem>("TreeViewItem");
-            //TreeViewDataConsumer<ItemsControl, TreeViewItem> treeViewDataConsumer =
-            //    new TreeViewDataConsumer<ItemsControl, TreeViewItem>(new string[] { "TreeViewItem" });
-            //ListBoxItemToTreeViewItem<ListBox, ListBoxItem> listBoxItemToTreeViewItem =
-            //    new ListBoxItemToTreeViewItem<ListBox, ListBoxItem>(new string[] { "ListBoxItemObject" });
-            //DragManager dragHelperTreeView0 = new DragManager(TreeView, treeViewDataProvider);
-            //DropManager dropHelperTreeView0 = new DropManager(TreeView,
-            //    new IDataConsumer[] {
-            //        treeViewDataConsumer,
-            //        listBoxItemToTreeViewItem,
-            //        _fileDropDataConsumer,
-            //    });
+            TreeViewDataProvider<ItemsControl, TreeViewItem> treeViewDataProvider =
+                new TreeViewDataProvider<ItemsControl, TreeViewItem>("TreeViewItem");
+            TreeViewDataConsumer<ItemsControl, TreeViewItem> treeViewDataConsumer =
+                new TreeViewDataConsumer<ItemsControl, TreeViewItem>(new string[] { "TreeViewItem" });
+            ListBoxItemToTreeViewItem<ListBox, ListBoxItem> listBoxItemToTreeViewItem =
+                new ListBoxItemToTreeViewItem<ListBox, ListBoxItem>(new string[] { "ListBoxItemObject" });
+            DragManager dragHelperTreeView0 = new DragManager(TreeView, treeViewDataProvider);
+            DropManager dropHelperTreeView0 = new DropManager(TreeView,
+                new IDataConsumer[] {
+                    treeViewDataConsumer,
+                    listBoxItemToTreeViewItem,
+                    _fileDropDataConsumer,
+                });
         }
 
         private void TreeDragOver(object sender, DragEventArgs e)
