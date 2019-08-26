@@ -65,8 +65,6 @@
     <Compile Include="DragDropFramework\FileDropConsumer.cs" />
     <Compile Include="DragDropFramework\IDataConsumer.cs" />
     <Compile Include="DragDropFramework\IDataProvider.cs" />
-    <Compile Include="DragDropFramework\ListBoxData.cs" />
-    <Compile Include="DragDropFramework\ListBoxToTreeView.cs" />
     <Compile Include="DragDropFramework\TreeViewData.cs" />
     <Compile Include="Extensions\StringObject.cs" />
     <Compile Include="Extensions\Utilities.cs" />

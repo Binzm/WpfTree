@@ -28,7 +28,7 @@ namespace TreeLibrary.Extensions
         {
             Win32Point position = new Win32Point();
             GetCursorPos(ref position);
-            return new Point((double)position.X, (double)position.Y);
+            return new Point((double) position.X, (double) position.Y);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace TreeLibrary.Extensions
                     depObj = VisualTreeHelper.GetParent(depObj);
                 else if (depObj is FrameworkContentElement)
                 {
-                    depObj = ((FrameworkContentElement)depObj).Parent;
+                    depObj = ((FrameworkContentElement) depObj).Parent;
                 }
                 else
                     depObj = null;
@@ -72,10 +72,11 @@ namespace TreeLibrary.Extensions
                     depObj = VisualTreeHelper.GetParent(depObj);
                 else if (depObj is FrameworkContentElement)
                 {
-                    depObj = ((FrameworkContentElement)depObj).Parent;
+                    depObj = ((FrameworkContentElement) depObj).Parent;
                 }
                 else
                     depObj = null;
+
                 if (depObj is T)
                     return depObj as T;
             }

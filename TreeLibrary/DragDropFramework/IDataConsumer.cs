@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace TreeLibrary.DragDropFramework
@@ -38,16 +34,6 @@ namespace TreeLibrary.DragDropFramework
         private FrameworkElement _dropTarget;
         private IDataConsumer[] _dragDropConsumers;
 
-        /// <summary>
-        /// Manage data that is dragged over and dropped on the <code>dropTarget</code>.
-        /// Supported data is defined as one or more classes that implement IDataConsumer.
-        /// </summary>
-        /// <param name="dropTarget">FrameworkElement monitored for drag events</param>
-        /// <param name="dragDropConsumer">Supported data objects</param>
-        public DropManager(FrameworkElement dropTarget, IDataConsumer dragDropConsumer)
-            : this(dropTarget, new IDataConsumer[] {dragDropConsumer})
-        {
-        }
 
         /// <summary>
         /// Manage data that is dragged over and dropped on the <code>dropTarget</code>.
@@ -104,12 +90,6 @@ namespace TreeLibrary.DragDropFramework
         /// </summary>
         private void DropTarget_DragEnter(object sender, DragEventArgs e)
         {
-            DragDropEffects effects = e.Effects;
-
-#if TESTING
-            e.Effects = DragDropEffects.Copy;
-            e.Handled = true;
-#else
             foreach (IDataConsumer dragDropConsumer in this._dragDropConsumers)
             {
                 if ((dragDropConsumer.DataConsumerActions & DataConsumerActions.DragEnter) != 0)
@@ -120,29 +100,11 @@ namespace TreeLibrary.DragDropFramework
                 }
             }
 
-            if (!e.Handled)
-            {
-                e.Effects = DragDropEffects.None;
-                e.Handled = true;
-            }
-#endif
+            if (e.Handled)
+                return;
 
-#if PRINT2OUTPUT
-            Debug.WriteLine(
-                "E Handled=" + e.Handled.ToString()
-                             + " sender=" + sender.GetType().ToString()
-                             + " Source=" + e.Source.GetType().ToString()
-                             + " OriginalSource=" + e.OriginalSource.GetType().ToString()
-                             + " Effects=" + effects.ToString()
-                             + " ReturnedEffects=" + e.Effects.ToString()
-                             + " AllowedEffects=" + e.AllowedEffects
-                             + this.DropObjectFormat(e)
-            );
-#endif
-
-#if PRINT2BUFFER
-            ((Window1) Application.Current.MainWindow).buf1.Append('E');
-#endif
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
         }
 
         /// <summary>
@@ -154,16 +116,6 @@ namespace TreeLibrary.DragDropFramework
         private void DropTarget_DragOver(object sender, DragEventArgs e)
         {
             //throw new NotImplementedException("DragOver not implemented");
-#if PRINT2BUFFER
-            ((TreeControl) Application.Current.MainWindow).buf0.Append('O');
-#endif
-
-            DragDropEffects effects = e.Effects;
-
-#if TESTING
-            e.Effects = DragDropEffects.Move;
-            e.Handled = true;
-#else
             foreach (IDataConsumer dragDropConsumer in this._dragDropConsumers)
             {
                 if ((dragDropConsumer.DataConsumerActions & DataConsumerActions.DragOver) != 0)
@@ -174,29 +126,11 @@ namespace TreeLibrary.DragDropFramework
                 }
             }
 
-            if (!e.Handled)
-            {
-                e.Effects = DragDropEffects.None;
-                e.Handled = true;
-            }
-#endif
+            if (e.Handled)
+                return;
 
-#if PRINT2OUTPUT
-            Debug.WriteLine(
-                "O Handled=" + e.Handled.ToString()
-                             + " sender=" + sender.GetType().ToString()
-                             + " Source=" + e.Source.GetType().ToString()
-                             + " OriginalSource=" + e.OriginalSource.GetType().ToString()
-                             + " Effects=" + effects.ToString()
-                             + " ReturnedEffects=" + e.Effects.ToString()
-                             + " AllowedEffects=" + e.AllowedEffects
-                             + this.DropObjectFormat(e)
-            );
-#endif
-
-#if PRINT2BUFFER
-            ((Window1) Application.Current.MainWindow).buf1.Append('O');
-#endif
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
         }
 
         /// <summary>
@@ -209,17 +143,6 @@ namespace TreeLibrary.DragDropFramework
         /// </summary>
         private void DropTarget_Drop(object sender, DragEventArgs e)
         {
-            //throw new NotImplementedException("Drop not implemented");
-#if PRINT2BUFFER
-            ((Window1) Application.Current.MainWindow).buf0.Append('D');
-#endif
-
-            DragDropEffects effects = e.Effects;
-
-#if TESTING
-            e.Effects = DragDropEffects.Move;
-            e.Handled = true;
-#else
             foreach (IDataConsumer dragDropConsumer in this._dragDropConsumers)
             {
                 if ((dragDropConsumer.DataConsumerActions & DataConsumerActions.Drop) != 0)
@@ -230,29 +153,11 @@ namespace TreeLibrary.DragDropFramework
                 }
             }
 
-            if (!e.Handled)
-            {
-                e.Effects = DragDropEffects.None;
-                e.Handled = true;
-            }
-#endif
+            if (e.Handled)
+                return;
 
-#if PRINT2OUTPUT
-            Debug.WriteLine(
-                "D Handled=" + e.Handled.ToString()
-                             + " sender=" + sender.GetType().ToString()
-                             + " Source=" + e.Source.GetType().ToString()
-                             + " OriginalSource=" + e.OriginalSource.GetType().ToString()
-                             + " Effects=" + effects.ToString()
-                             + " ReturnedEffects=" + e.Effects.ToString()
-                             + " AllowedEffects=" + e.AllowedEffects
-                             + this.DropObjectFormat(e)
-            );
-#endif
-
-#if PRINT2BUFFER
-            ((Window1) Application.Current.MainWindow).buf1.Append('D');
-#endif
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
         }
 
         /// <summary>
@@ -261,17 +166,6 @@ namespace TreeLibrary.DragDropFramework
         /// </summary>
         private void DropTarget_DragLeave(object sender, DragEventArgs e)
         {
-            //throw new NotImplementedException("DragLeave not implemented");
-#if PRINT2BUFFER
-            ((Window1) Application.Current.MainWindow).buf0.Append('L');
-#endif
-
-            DragDropEffects effects = e.Effects;
-
-#if TESTING
-            e.Effects = DragDropEffects.Link;
-            e.Handled = true;
-#else
             foreach (IDataConsumer dragDropConsumer in this._dragDropConsumers)
             {
                 if ((dragDropConsumer.DataConsumerActions & DataConsumerActions.DragLeave) != 0)
@@ -282,53 +176,11 @@ namespace TreeLibrary.DragDropFramework
                 }
             }
 
-            if (!e.Handled)
-            {
-                e.Effects = DragDropEffects.None;
-                e.Handled = true;
-            }
-#endif
+            if (e.Handled)
+                return;
 
-#if PRINT2OUTPUT
-            Debug.WriteLine(
-                "L Handled=" + e.Handled.ToString()
-                             + " sender=" + sender.GetType().ToString()
-                             + " Source=" + e.Source.GetType().ToString()
-                             + " OriginalSource=" + e.OriginalSource.GetType().ToString()
-                             + " Effects=" + effects.ToString()
-                             + " ReturnedEffects=" + e.Effects.ToString()
-                             + " AllowedEffects=" + e.AllowedEffects
-                             + this.DropObjectFormat(e)
-            );
-#endif
-
-#if PRINT2BUFFER
-            ((Window1) Application.Current.MainWindow).buf1.Append('L');
-#endif
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
         }
-
-#if PRINT2OUTPUT
-        /// <summary>
-        /// Returns a string of the data formats contained in the drag data
-        /// </summary>
-        /// <param name="e">DragEvent argument containing the drag data</param>
-        /// <returns>String of drag data object formats</returns>
-        private string DropObjectFormat(DragEventArgs e)
-        {
-            StringBuilder buffer = new StringBuilder();
-
-            buffer.Append(" DropObjectFormat=");
-            string[] dataFormats = e.Data.GetFormats();
-            int count = dataFormats.Length;
-            for (int i = 0; i < count; ++i)
-            {
-                if (i > 0)
-                    buffer.Append(", ");
-                buffer.Append(dataFormats[i]);
-            }
-
-            return buffer.ToString();
-        }
-#endif
     }
 }

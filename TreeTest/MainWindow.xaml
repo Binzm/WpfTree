@@ -22,8 +22,6 @@
             <Button Content="删除选中节点" Margin="13" Click="ButtonBaseRemoveSelectNodeItem_OnClick" />
             <Button Content="删除所有Check选中节点" Margin="13" Click="ButtonBaseRemoveCheckItem_OnClick" />
         </WrapPanel>
-        <Grid Name="TextTreeDrag" Grid.Row="2">
-
-        </Grid>
+        <TreeView Name="TextTreeDrag" Grid.Row="2" />
     </Grid>
 </Window>

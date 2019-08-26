@@ -13,6 +13,8 @@ using System.Windows.Data;
 using System.Windows.Media;
 using TreeLibrary;
 using TreeLibrary.Converter;
+using TreeLibrary.Delegate;
+using TreeLibrary.DragDropFramework;
 using TreeLibrary.Model;
 using TreeLibrary.NodeItem;
 using TreeLibrary.NodeItem.BaseItem;
@@ -32,6 +34,13 @@ namespace TreeTest
         private TreeControl _treeControl;
         private Timer _timer;
         private readonly Random _random = new Random();
+
+        private readonly FileDropConsumer _fileDropDataConsumer =
+            new FileDropConsumer(new string[]
+            {
+                "FileDrop",
+                "FileNameW"
+            });
 
         private readonly string[] _colorStrings = new string[]
         {
@@ -276,7 +285,7 @@ namespace TreeTest
 
             #endregion
 
-          
+
             var iteModels = new ObservableCollection<TreeNodeModel>
             {
                 new TwosTreeNodeModel()
@@ -316,12 +325,95 @@ namespace TreeTest
                 Name = "一级子节点"
             });
 
-           
+
             _treeControl.SetItemsSource(iteModels);
 
+            #region Tree DragDrop
+
+            TreeViewDataProvider<ItemsControl, TreeViewItem> treeViewDataProvider =
+                new TreeViewDataProvider<ItemsControl, TreeViewItem>("TreeViewItem");
+            TreeViewDataConsumer<ItemsControl, TreeViewItem> treeViewDataConsumer =
+                new TreeViewDataConsumer<ItemsControl, TreeViewItem>(new string[] {"TreeViewItem"});
+
+            treeViewDataConsumer.DropDragHandler += DropDragHandler;
+
+            _ = new DragManager(_treeControl.ControlTree, treeViewDataProvider);
+            _ = new DropManager(_treeControl.ControlTree,
+                new IDataConsumer[]
+                {
+                    treeViewDataConsumer
+                });
+
+            _ = new DropManager(TextTreeDrag,
+                new IDataConsumer[]
+                {
+                    treeViewDataConsumer
+                });
+
+            #endregion
+
             TreeStackPanel.Children.Add(_treeControl);
+
             ToChangeTreeNodeProperty();
         }
+
+        private void DropDragHandler(bool bDrop, object sender, DragEventArgs e)
+        {
+            TreeViewDataProvider<ItemsControl, TreeViewItem> dataProvider =
+                (TreeViewDataProvider<ItemsControl, TreeViewItem>) this.GetData(e);
+
+            TreeNodeModel dragSourceObject = dataProvider.SourceObject as TreeNodeModel;
+            if (bDrop)
+            {
+                var dropTarget = e.Source as TreeView;
+                var treeView = (TreeView) sender;
+                if (treeView != null)
+                {
+                    if (dropTarget != null && dropTarget.Name == "TextTreeDrag")
+                    {
+                        if (dragSourceObject != null)
+                        {
+                            treeView.Items.Add(new TreeViewItem {Header = dragSourceObject.Name});
+                            e.Handled = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// A list of formats this data object consumer supports
+        /// </summary>
+        private string[] _dataFormats = {"TreeViewItem"};
+
+        public virtual object GetData(DragEventArgs e)
+        {
+            object data = null;
+            string[] dataFormats = e.Data.GetFormats();
+            foreach (string dataFormat in dataFormats)
+            {
+                foreach (string dataFormatString in this._dataFormats)
+                {
+                    if (dataFormat.Equals(dataFormatString))
+                    {
+                        try
+                        {
+                            data = e.Data.GetData(dataFormat);
+                        }
+                        catch
+                        {
+                            ;
+                        }
+                    }
+
+                    if (data != null)
+                        return data;
+                }
+            }
+
+            return null;
+        }
+
 
         private void ToChangeTreeNodeProperty()
         {

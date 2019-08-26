@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using TreeLibrary.Delegate;
 using TreeLibrary.Extensions;
 using TreeLibrary.Model;
+using TreeLibrary.NodeItem.BaseItem;
 
 namespace TreeLibrary.DragDropFramework
 {
@@ -63,8 +60,8 @@ namespace TreeLibrary.DragDropFramework
         {
             if ((this.SourceContainer as TreeView) == null)
                 return;
-            var treeNodeList = ((this.SourceContainer as TreeView).DataContext as NodeItem.BaseItem.TreeHelper)
-                .NodeList;
+
+            var treeNodeList = ((TreeHelper) ((TreeView) this.SourceContainer).DataContext)?.NodeList;
             if (treeNodeList == null)
                 return;
 
@@ -72,11 +69,13 @@ namespace TreeLibrary.DragDropFramework
             RemoveItemByNodeModel(removeItem, treeNodeList);
         }
 
-        private bool RemoveItemByNodeModel(TreeNodeModel removeItem, ObservableCollection<TreeNodeModel> treeNodeList)
+        private static bool RemoveItemByNodeModel(TreeNodeModel removeItem,
+            ObservableCollection<TreeNodeModel> treeNodeList)
         {
             if (treeNodeList.Contains(removeItem))
             {
                 treeNodeList.Remove(removeItem);
+                removeItem.Parent = null;
                 return true;
             }
 
@@ -118,18 +117,22 @@ namespace TreeLibrary.DragDropFramework
 
         public override void DropTarget_DragEnter(object sender, DragEventArgs e)
         {
+            DropDragHandler?.Invoke(false, sender, e);
             this.DragOverOrDrop(false, sender, e);
         }
 
         public override void DropTarget_DragOver(object sender, DragEventArgs e)
         {
+            DropDragHandler?.Invoke(false, sender, e);
             this.DragOverOrDrop(false, sender, e);
         }
 
         public override void DropTarget_Drop(object sender, DragEventArgs e)
         {
+            DropDragHandler?.Invoke(true, sender, e);
             this.DragOverOrDrop(true, sender, e);
         }
+
 
         /// <summary>
         /// First determine whether the drag data is supported.
@@ -164,35 +167,23 @@ namespace TreeLibrary.DragDropFramework
                 {
                     if (bDrop)
                     {
+                        if (IsRejectRemove(dragSourceObject, e.OriginalSource))
+                            return;
                         dataProvider.Unparent();
 
-                        if ((e.OriginalSource as Grid) != null &&
-                            (e.OriginalSource as Grid).DataContext as TreeLibrary.NodeItem.BaseItem.TreeHelper !=
-                            null && (e.Source as TreeView) != null)
+                        if ((e.OriginalSource as Grid) != null)
                         {
-                            ((e.Source as TreeView).DataContext as NodeItem.BaseItem.TreeHelper).NodeList.Add(
+                            ((TreeHelper) ((Grid) e.OriginalSource).DataContext)?.NodeList.Add(
                                 dragSourceObject);
                             return;
                         }
 
                         if ((e.OriginalSource as FrameworkElement) != null)
                         {
-                            ((e.OriginalSource as FrameworkElement).DataContext as TreeNodeModel).AddSubNode(
+                            ((TreeNodeModel) ((FrameworkElement) e.OriginalSource).DataContext)?.AddSubNode(
                                 dragSourceObject);
                             return;
                         }
-
-                        if ((e.OriginalSource as Image) != null)
-                        {
-                            ((e.OriginalSource as Image).DataContext as TreeNodeModel).AddSubNode(dragSourceObject);
-                        }
-
-
-                        if ((e.OriginalSource as TextBlock) == null ||
-                            ((e.OriginalSource as TextBlock).DataContext as TreeNodeModel) == null)
-                            return;
-                        ((e.OriginalSource as TextBlock).DataContext as TreeNodeModel).AddSubNode(dragSourceObject);
-                        //dropContainer.Items.Add(dragSourceObject);
                     }
 
                     e.Effects = DragDropEffects.Move;
@@ -203,8 +194,8 @@ namespace TreeLibrary.DragDropFramework
                     // bool IsAncestor = dragSourceObject.IsAncestorOf(dropTarget);
                     if ((dataProvider.KeyStates & DragDropKeyStates.ShiftKey) != 0)
                     {
-                        ItemsControl shiftDropTarget = Utilities.FindParentControlExcludingMe<ItemsControl>(dropTarget);
-                        Debug.Assert(shiftDropTarget != null);
+                        //ItemsControl shiftDropTarget = Utilities.FindParentControlExcludingMe<ItemsControl>(dropTarget);
+                        //Debug.Assert(shiftDropTarget != null);
                         //if (!IsAncestor)
                         //{
                         //    if (bDrop)
@@ -252,5 +243,43 @@ namespace TreeLibrary.DragDropFramework
                 }
             }
         }
+
+        private bool IsRejectRemove(TreeNodeModel dragSourceObject, object originalSource)
+        {
+            try
+            {
+                if ((originalSource as FrameworkElement) == null)
+                    return false;
+
+                var treeNodeModel = ((TreeNodeModel) ((FrameworkElement) originalSource).DataContext);
+                if (dragSourceObject == treeNodeModel)
+                    return true;
+
+                if (dragSourceObject.SubNodes.Count <= 0)
+                    return false;
+
+                return IsDragDropSubNode(dragSourceObject.SubNodes, treeNodeModel);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsDragDropSubNode(ObservableCollection<TreeNodeModel> subNodes, TreeNodeModel dragSourceObject)
+        {
+            foreach (var nodeItem in subNodes)
+            {
+                if (nodeItem == dragSourceObject)
+                    return true;
+                if (nodeItem.SubNodes.Count > 0)
+                    if (IsDragDropSubNode(nodeItem.SubNodes, dragSourceObject))
+                        return true;
+            }
+
+            return false;
+        }
+
+        public event DropDragHandler DropDragHandler;
     }
 }

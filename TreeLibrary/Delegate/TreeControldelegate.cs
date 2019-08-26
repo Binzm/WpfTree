@@ -29,4 +29,6 @@ namespace TreeLibrary.Delegate
 
     public delegate void PreviewMouseUpHandler(object sender, MouseButtonEventArgs e);
 
+
+    public delegate void DropDragHandler(bool bDrop, object sender, DragEventArgs e);
 }

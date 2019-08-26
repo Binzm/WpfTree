@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace TreeLibrary.DragDropFramework
 {
-
     /// <summary>
     /// This class provides some default implementations for
     /// IDataProvider that can be used by most derived classes.
@@ -20,15 +15,13 @@ namespace TreeLibrary.DragDropFramework
         where TSourceContainer : UIElement
         where TSourceObject : UIElement
     {
-
         /// <summary>
         /// Create a Data Provider for specified SourceContainer/SourceObject
         /// identified by the specified data format string
         /// </summary>
         /// <param name="dataFormatString">Identifies the data object</param>
-        public DataProviderBase(string dataFormatString)
+        protected DataProviderBase(string dataFormatString)
         {
-            Debug.Assert((dataFormatString != null) && (dataFormatString.Length > 0), "dataFormatString cannot be null and must not be an empty string");
             this.SourceDataFormat = dataFormatString;
         }
 
@@ -49,45 +42,28 @@ namespace TreeLibrary.DragDropFramework
         /// <summary>
         /// Return true to add an adorner to the dragged object
         /// </summary>
-        public virtual bool AddAdorner { get { return false; } }
+        public virtual bool AddAdorner
+        {
+            get { return false; }
+        }
 
         /// <summary>
         /// Return true to capture the mouse while dragging
         /// </summary>
-        public virtual bool NeedsCaptureMouse { get { return false; } }
+        public virtual bool NeedsCaptureMouse
+        {
+            get { return false; }
+        }
 
         /// <summary>
         /// Returns the drag operations supported by this data object provider
         /// </summary>
-        public abstract DragDropEffects AllowedEffects
-        {
-            get;
-            //{
-            //    return
-            //        DragDropEffects.Copy |
-            //        DragDropEffects.Scroll |
-            //        DragDropEffects.Move |
-            //        DragDropEffects.Link |
-            //
-            //        DragDropEffects.None;
-            //}
-        }
+        public abstract DragDropEffects AllowedEffects { get; }
 
         /// <summary>
         /// Returns the actions used by this data object provider
         /// </summary>
-        public abstract DataProviderActions DataProviderActions
-        {
-            get;
-            //{
-            //    return
-            //        //DataProviderActions.QueryContinueDrag |
-            //        //DataProviderActions.GiveFeedback |
-            //        //DataProviderActions.DoDragDrop_Done |
-            //
-            //        DataProviderActions.None;
-            //}
-        }
+        public abstract DataProviderActions DataProviderActions { get; }
 
         /// <summary>
         /// Returns true when the specified source container, source object
@@ -100,7 +76,8 @@ namespace TreeLibrary.DragDropFramework
         /// <param name="dragSourceObject">Mouse event args <code>Source</code></param>
         /// <param name="dragOriginalSourceObject">Mouse event args <code>Source</code></param>
         /// <returns>True for a supported container and object; false otherwise</returns>
-        public virtual bool IsSupportedContainerAndObject(bool initFlag, object dragSourceContainer, object dragSourceObject, object dragOriginalSourceObject)
+        public virtual bool IsSupportedContainerAndObject(bool initFlag, object dragSourceContainer,
+            object dragSourceObject, object dragOriginalSourceObject)
         {
             // Init DataProvider variables
             if (initFlag)
@@ -110,6 +87,7 @@ namespace TreeLibrary.DragDropFramework
                 this.SourceObject = dragSourceObject;
                 this.OriginalSourceObject = dragOriginalSourceObject;
             }
+
             //(dragSourceObject is TSourceObject) 
             return (dragSourceContainer is TSourceContainer);
         }
@@ -144,12 +122,13 @@ namespace TreeLibrary.DragDropFramework
         /// KeyStates saved from QueryContinueDrag
         /// </summary>
         private DragDropKeyStates? _keyStates = null;
+
         public DragDropKeyStates KeyStates
         {
             get
             {
                 if (this._keyStates != null)
-                    return (DragDropKeyStates)this._keyStates;
+                    return (DragDropKeyStates) this._keyStates;
                 else
                     throw new NotImplementedException("No KeyState value to return");
             }
@@ -159,12 +138,13 @@ namespace TreeLibrary.DragDropFramework
         /// EscapePressed saved from QueryContinueDrag
         /// </summary>
         private bool? _escapePressed = null;
+
         public bool EscapePressed
         {
             get
             {
                 if (this._escapePressed != null)
-                    return (bool)this._escapePressed;
+                    return (bool) this._escapePressed;
                 else
                     throw new NotImplementedException("No EscapePressed value to return");
             }
@@ -177,7 +157,6 @@ namespace TreeLibrary.DragDropFramework
         /// <param name="data"></param>
         public virtual void SetData(ref DataObject data)
         {
-            System.Diagnostics.Debug.Assert(data.GetDataPresent(this.SourceDataFormat) == false, "Shouldn't set data more than once");
             data.SetData(this.SourceDataFormat, this);
         }
 

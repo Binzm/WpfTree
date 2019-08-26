@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace TreeLibrary.DragDropFramework
@@ -13,35 +8,23 @@ namespace TreeLibrary.DragDropFramework
         /// <summary>
         /// A list of formats this data object consumer supports
         /// </summary>
-        private string[] _dataFormats;
+        private readonly string[] _dataFormats;
 
         /// <summary>
         /// Create a Data Consumer that supports
         /// the specified data formats
         /// </summary>
         /// <param name="dataFormats">Data formats supported by this data consumer</param>
-        public DataConsumerBase(string[] dataFormats)
+        protected DataConsumerBase(string[] dataFormats)
         {
             this._dataFormats = dataFormats;
-            Debug.Assert((dataFormats != null) && (dataFormats.Length > 0), "Must have at least one format string");
+            //Debug.Assert((dataFormats != null) && (dataFormats.Length > 0), "Must have at least one format string");
         }
 
         /// <summary>
         /// Returns the actions supported by this data object consumer
         /// </summary>
-        public abstract DataConsumerActions DataConsumerActions
-        {
-            get;
-            //{
-            //    return
-            //        DataConsumerActions.DragEnter |
-            //        DataConsumerActions.DragOver |
-            //        DataConsumerActions.Drop |
-            //        DataConsumerActions.DragLeave |
-
-            //        DataConsumerActions.None;
-            //}
-        }
+        public abstract DataConsumerActions DataConsumerActions { get; }
 
         /// <summary>
         /// Search the available data formats for a

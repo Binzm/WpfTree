@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -39,13 +34,17 @@ namespace TreeLibrary.DragDropFramework
         public DefaultAdorner(UIElement adornedElement, UIElement adornerElement, Point adornerOrigin, double opacity)
             : base(adornedElement)
         {
-            Rectangle rect = new Rectangle();
-            rect.Width = adornerElement.RenderSize.Width;
-            rect.Height = adornerElement.RenderSize.Height;
+            Rectangle rect = new Rectangle
+            {
+                Width = adornerElement.RenderSize.Width,
+                Height = adornerElement.RenderSize.Height
+            };
 
-            VisualBrush visualBrush = new VisualBrush(adornerElement);
-            visualBrush.Opacity = opacity;
-            visualBrush.Stretch = Stretch.None;
+            VisualBrush visualBrush = new VisualBrush(adornerElement)
+            {
+                Opacity = opacity,
+                Stretch = Stretch.None
+            };
             rect.Fill = visualBrush;
 
             this._child = rect;
@@ -67,39 +66,11 @@ namespace TreeLibrary.DragDropFramework
 
         private void UpdatePosition()
         {
-            AdornerLayer adornerLayer = (AdornerLayer)this.Parent;
+            AdornerLayer adornerLayer = (AdornerLayer) this.Parent;
             if (adornerLayer != null)
             {
                 adornerLayer.Update(this.AdornedElement);
             }
-        }
-
-        protected override int VisualChildrenCount { get { return 1; } }
-
-        protected override Visual GetVisualChild(int index)
-        {
-            System.Diagnostics.Debug.Assert(index == 0, "Index must be 0, there's only one child");
-            return this._child;
-        }
-
-        protected override Size MeasureOverride(Size finalSize)
-        {
-            this._child.Measure(finalSize);
-            return this._child.DesiredSize;
-        }
-
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            this._child.Arrange(new Rect(finalSize));
-            return finalSize;
-        }
-
-        public override GeneralTransform GetDesiredTransform(GeneralTransform transform)
-        {
-            GeneralTransformGroup newTransform = new GeneralTransformGroup();
-            newTransform.Children.Add(base.GetDesiredTransform(transform));
-            newTransform.Children.Add(new TranslateTransform(this._adornerOffset.X, this._adornerOffset.Y));
-            return newTransform;
         }
     }
 }

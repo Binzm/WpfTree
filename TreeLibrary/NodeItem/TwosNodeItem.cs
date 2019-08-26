@@ -5,12 +5,11 @@ namespace TreeLibrary.NodeItem
 {
     public class TwosNodeItem : TreeNodeItem
     {
-       
-        public  static DependencyProperty ExitImgProperty;
+        public static DependencyProperty ExitImgProperty;
 
         public string ExitImg
         {
-            get => (string)base.GetValue(TwosNodeItem.ExitImgProperty);
+            get => (string) base.GetValue(TwosNodeItem.ExitImgProperty);
             set => base.SetValue(TwosNodeItem.ExitImgProperty, value);
         }
 
@@ -22,10 +21,6 @@ namespace TreeLibrary.NodeItem
 
         public TwosNodeItem()
         {
-
         }
-
-
-       
     }
 }

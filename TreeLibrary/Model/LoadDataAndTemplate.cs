@@ -40,7 +40,6 @@ namespace TreeLibrary.Model
         public static Dictionary<string, Dictionary<RoutedEvent, System.Delegate>> CurrentLoadMenuRouteHandler;
 
 
-
         public bool GetIsAllowDrop()
         {
             return TreeNodeIsAllowDrop;

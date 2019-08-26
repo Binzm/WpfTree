@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -295,27 +291,8 @@ namespace TreeLibrary.DragDropFramework
         /// </summary>
         private void DragSource_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
         {
-#if PRINT2BUFFER
-            ((Window1)Application.Current.MainWindow).buf0.Append('q');
-#endif
-
             if ((this._dragDropObject.DataProviderActions & DataProviderActions.QueryContinueDrag) != 0)
                 this._dragDropObject.DragSource_QueryContinueDrag(sender, e);
-
-#if PRINT2OUTPUT
-            Debug.WriteLine(
-                "q handled=" + e.Handled.ToString()
-                + " action=" + e.Action.ToString()
-                + " sender=" + sender.GetType().ToString()
-                + " Source=" + e.Source.GetType().ToString()
-                + " OriginalSource=" + e.OriginalSource.GetType().ToString()
-                + " KeyStates=" + e.KeyStates.ToString()
-                );
-#endif
-
-#if PRINT2BUFFER
-            ((Window1)Application.Current.MainWindow).buf1.Append('q');
-#endif
         }
 
         /// <summary>
@@ -324,10 +301,6 @@ namespace TreeLibrary.DragDropFramework
         /// </summary>
         private void DragSource_GiveFeedback(object sender, GiveFeedbackEventArgs e)
         {
-#if PRINT2BUFFER
-            ((Window1)Application.Current.MainWindow).buf0.Append('g');
-#endif
-
             if (this._dragDropObject.AddAdorner)
             {
                 Point point = Utilities.Win32GetCursorPos();
@@ -337,20 +310,6 @@ namespace TreeLibrary.DragDropFramework
 
             if ((this._dragDropObject.DataProviderActions & DataProviderActions.GiveFeedback) != 0)
                 this._dragDropObject.DragSource_GiveFeedback(sender, e);
-
-#if PRINT2OUTPUT
-            Debug.WriteLine(
-                "g handled=" + e.Handled.ToString()
-                + " sender=" + sender.GetType().ToString()
-                + " Source=" + e.Source.GetType().ToString()
-                + " OriginalSource=" + e.OriginalSource.GetType().ToString()
-                + " Effects=" + e.Effects.ToString()
-                );
-#endif
-
-#if PRINT2BUFFER
-            ((Window1)Application.Current.MainWindow).buf1.Append('g');
-#endif
         }
 
         /// <summary>
@@ -427,18 +386,6 @@ namespace TreeLibrary.DragDropFramework
         {
             if ((this._dragDropObject.DataProviderActions & DataProviderActions.DoDragDrop_Done) != 0)
                 this._dragDropObject.DoDragDrop_Done(resultEffects);
-
-#if PRINT2BUFFER
-            Debug.WriteLine("buf0: " + ((Window1)Application.Current.MainWindow).buf0.ToString());
-            Debug.WriteLine("buf1: " + ((Window1)Application.Current.MainWindow).buf1.ToString());
-            bool buffersSame =
- (((Window1)Application.Current.MainWindow).buf0.ToString().CompareTo(((Window1)Application.Current.MainWindow).buf1.ToString()) == 0);
-            if(buffersSame)
-                Debug.WriteLine("buf0 and buf1 are the same");
-            Debug.Assert(buffersSame, "Possible reentrancy issue(s) -- make sure event code is short");
-            ((Window1)Application.Current.MainWindow).buf0 = new StringBuilder("");
-            ((Window1)Application.Current.MainWindow).buf1 = new StringBuilder("");
-#endif
         }
     }
 }

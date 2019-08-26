@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TreeLibrary.Extensions;
@@ -60,9 +56,11 @@ namespace TreeLibrary.DragDropFramework
                         {
                             if (bDrop)
                             {
-                                TabItem item = new TabItem();
-                                item.Header = System.IO.Path.GetFileName(file);
-                                item.ToolTip = file;
+                                TabItem item = new TabItem
+                                {
+                                    Header = System.IO.Path.GetFileName(file),
+                                    ToolTip = file
+                                };
                                 dstItemsControl.Items.Insert(0, item);
                                 item.IsSelected = true;
                             }
@@ -75,9 +73,11 @@ namespace TreeLibrary.DragDropFramework
                             {
                                 ListBoxItem dstItem =
                                     Utilities.FindParentControlIncludingMe<ListBoxItem>(e.Source as DependencyObject);
-                                ListBoxItem item = new ListBoxItem();
-                                item.Content = System.IO.Path.GetFileName(file);
-                                item.ToolTip = file;
+                                ListBoxItem item = new ListBoxItem
+                                {
+                                    Content = System.IO.Path.GetFileName(file),
+                                    ToolTip = file
+                                };
                                 if (dstItem == null)
                                     dstItemsControl.Items.Add(item); // ... if dropped on an empty area
                                 else
@@ -94,10 +94,12 @@ namespace TreeLibrary.DragDropFramework
                             if (bDrop)
                             {
                                 if (e.Source is ItemsControl)
-                                    dstItemsControl = e.Source as ItemsControl; // Dropped on a TreeViewItem
-                                TreeViewItem item = new TreeViewItem();
-                                item.Header = System.IO.Path.GetFileName(file);
-                                item.ToolTip = file;
+                                    dstItemsControl = (ItemsControl) e.Source; // Dropped on a TreeViewItem
+                                TreeViewItem item = new TreeViewItem
+                                {
+                                    Header = System.IO.Path.GetFileName(file),
+                                    ToolTip = file
+                                };
                                 dstItemsControl.Items.Add(item);
                                 item.IsSelected = true;
                                 item.BringIntoView();

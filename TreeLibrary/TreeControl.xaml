@@ -29,8 +29,7 @@
         <TreeView Grid.Row="1" Name="TreeView"
                   AllowDrop="{Binding AutoCompleteIsShow}"
                   VirtualizingStackPanel.IsVirtualizing="False"
-                  VirtualizingStackPanel.VirtualizationMode="Recycling"
-                  >
+                  VirtualizingStackPanel.VirtualizationMode="Recycling">
             <TreeView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
                     <Setter Property="TreeViewItem.IsExpanded"

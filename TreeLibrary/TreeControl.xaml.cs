@@ -7,14 +7,12 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using TreeLibrary.Args;
 using TreeLibrary.Delegate;
-using TreeLibrary.DragDropFramework;
 using TreeLibrary.Model;
 using TreeLibrary.NodeItem.BaseItem;
 
@@ -34,27 +32,16 @@ namespace TreeLibrary
         private Dictionary<Type, Type> _modelTyeAndItemTypeDictionary;
 
 
-        //private TreeNodeModel _selectNodeModel;
-
-        private Dictionary<string, Dictionary<RoutedEvent, System.Delegate>> _menuRouteAndHandlerDictionary;
+        private readonly Dictionary<string, Dictionary<RoutedEvent, System.Delegate>> _menuRouteAndHandlerDictionary;
 
         public TreeHelper TreeHelper = new TreeHelper();
 
-        private readonly FileDropConsumer _fileDropDataConsumer =
-            new FileDropConsumer(new string[]
-            {
-                "FileDrop",
-                "FileNameW",
-            });
-        //public TreeNodeModel SelectNodeModel
-        //{
-        //    get => _selectNodeModel;
-        //    set
+        //private readonly FileDropConsumer _fileDropDataConsumer =
+        //    new FileDropConsumer(new string[]
         //    {
-        //        _selectNodeModel = value;
-        //        this.OnPropertyChanged();
-        //    }
-        //}
+        //        "FileDrop",
+        //        "FileNameW"
+        //    });
 
         protected bool IsDragDrop;
         private bool _mIsMouseDown;
@@ -69,6 +56,7 @@ namespace TreeLibrary
             get => (bool) GetValue(TreeControl.AllowDropProperty);
             set => SetValue(TreeControl.AllowDropProperty, value);
         }
+
         public bool AutoCompleteIsShow
         {
             get => (bool) GetValue(TreeControl.AutoCompleteIsShowProperty);
@@ -87,6 +75,12 @@ namespace TreeLibrary
                 this._treeSelectedNode = value;
                 this.OnPropertyChanged();
             }
+        }
+
+        public TreeView ControlTree
+        {
+            get => this.TreeView;
+            set => this.TreeView = value;
         }
 
 
@@ -115,9 +109,6 @@ namespace TreeLibrary
             AddMenuItem();
 
 
-
-
-
             if (!this.IsAllowDrop)
                 return;
 
@@ -126,19 +117,20 @@ namespace TreeLibrary
             //this.TreeView.PreviewMouseMove += TreePreviewMouseMove;
             //this.TreeView.DragOver += TreeDragOver;
 
-            TreeViewDataProvider<ItemsControl, TreeViewItem> treeViewDataProvider =
-                new TreeViewDataProvider<ItemsControl, TreeViewItem>("TreeViewItem");
-            TreeViewDataConsumer<ItemsControl, TreeViewItem> treeViewDataConsumer =
-                new TreeViewDataConsumer<ItemsControl, TreeViewItem>(new string[] { "TreeViewItem" });
-            ListBoxItemToTreeViewItem<ListBox, ListBoxItem> listBoxItemToTreeViewItem =
-                new ListBoxItemToTreeViewItem<ListBox, ListBoxItem>(new string[] { "ListBoxItemObject" });
-            DragManager dragHelperTreeView0 = new DragManager(TreeView, treeViewDataProvider);
-            DropManager dropHelperTreeView0 = new DropManager(TreeView,
-                new IDataConsumer[] {
-                    treeViewDataConsumer,
-                    listBoxItemToTreeViewItem,
-                    _fileDropDataConsumer,
-                });
+
+            //TreeViewDataProvider<ItemsControl, TreeViewItem> treeViewDataProvider =
+            //    new TreeViewDataProvider<ItemsControl, TreeViewItem>("TreeViewItem");
+            //TreeViewDataConsumer<ItemsControl, TreeViewItem> treeViewDataConsumer =
+            //    new TreeViewDataConsumer<ItemsControl, TreeViewItem>(new string[] { "TreeViewItem" });
+
+            ////treeViewDataConsumer.DropDragHandler += DropDragHandler;
+
+            //_ = new DragManager(TreeView, treeViewDataProvider);
+            //_ = new DropManager(TreeView,
+            //    new IDataConsumer[] {
+            //        treeViewDataConsumer,
+            //        _fileDropDataConsumer,
+            //    });
         }
 
         private void TreeDragOver(object sender, DragEventArgs e)
@@ -189,7 +181,8 @@ namespace TreeLibrary
             AutoCompleteIsShowProperty =
                 DependencyProperty.Register("AutoCompleteIsShow", typeof(bool), typeof(TreeControl),
                     new PropertyMetadata(false));
-            AllowDropProperty=DependencyProperty.Register("IsAllowDrop", typeof(bool),typeof(TreeControl),new PropertyMetadata(false));
+            AllowDropProperty = DependencyProperty.Register("IsAllowDrop", typeof(bool), typeof(TreeControl),
+                new PropertyMetadata(false));
         }
 
         #region 初始化构造HierarchicalDataTemplate
@@ -399,16 +392,6 @@ namespace TreeLibrary
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void TreeView_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            this._mIsMouseDown = true;
-            this._mStartPoint = e.GetPosition(this);
-        }
-
-        private void TreeView_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            this._mIsMouseDown = false;
-        }
 
         private void TreeNodeItem_NodeDoubleClick(object sender, Args.NodeDoubleClickArgs e)
         {
@@ -450,9 +433,11 @@ namespace TreeLibrary
                 {
                     foreach (TreeNodeModel current in mQuery)
                     {
-                        ComboBoxItem comboBoxItem = new ComboBoxItem();
-                        comboBoxItem.Content = current.Name;
-                        comboBoxItem.Tag = current;
+                        ComboBoxItem comboBoxItem = new ComboBoxItem
+                        {
+                            Content = current.Name,
+                            Tag = current
+                        };
                         this.cmbLocation.Items.Add(comboBoxItem);
                     }
                 }), new object[0]);
