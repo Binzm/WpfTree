@@ -191,7 +191,7 @@ namespace TreeLibrary.DragDropFramework
         {
             foreach (IDataProvider dragDropObject in this._dragDropObjects)
             {
-                if ((e.OriginalSource as FrameworkElement) == null)
+                if ((e.OriginalSource as FrameworkElement) == null || (e.OriginalSource as System.Windows.Shapes.Rectangle) != null)
                     return;
                 if (dragDropObject.IsSupportedContainerAndObject(true, sender,
                     ((FrameworkElement)e.OriginalSource).DataContext, e.OriginalSource))
@@ -219,7 +219,7 @@ namespace TreeLibrary.DragDropFramework
         /// </summary>
         private void DragSource_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if ((e.OriginalSource as FrameworkElement) == null)
+            if ((e.OriginalSource as FrameworkElement) == null|| (e.OriginalSource as System.Windows.Shapes.Rectangle)!=null)
                 return;
             if ((this._dragDropObject != null) && !this._dragInProgress &&
                 this._dragDropObject.IsSupportedContainerAndObject(false, sender,
@@ -359,10 +359,11 @@ namespace TreeLibrary.DragDropFramework
                 //dragSource = this._dragDropObject.Item;
                 resultEffects = DragDrop.DoDragDrop(dragSource, data, this._dragDropObject.AllowedEffects);
             }
-            catch
+            catch(Exception exception)
             {
                 Debug.WriteLine("DragDrop.DoDragDrop threw an exception");
             }
+
 
             if (queryContinueDrag != null)
                 this._dragSource.QueryContinueDrag -= queryContinueDrag;

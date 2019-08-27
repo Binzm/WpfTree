@@ -273,6 +273,27 @@ namespace TreeLibrary
             InitAddAllTreeNodeModel(itemSource);
         }
 
+
+        public void RemoveNodeItem(TreeNodeModel removeNodeModel)
+        {
+            var treeNodeIndex = TreeHelper.TreeAllNodels.ToList().FindIndex(f => f.Data.Id == removeNodeModel.Data.Id);
+            if (treeNodeIndex >= 0)
+            {
+                List<TreeNodeModel> removeNodeList = new List<TreeNodeModel>();
+                if (RemoveNodeItemByNodeList(removeNodeModel, null, removeNodeList))
+                {
+                    TreeHelper.TreeAllNodels.RemoveAt(treeNodeIndex);
+                    if (removeNodeList.Count > 0)
+                    {
+                        foreach (var removeNode in removeNodeList)
+                        {
+                            TreeHelper.TreeAllNodels.Remove(removeNode);
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// 删除选中节点
         /// </summary>
@@ -313,7 +334,7 @@ namespace TreeLibrary
             }
         }
 
-        private bool RemoveNodeItemByNodeList(TreeNodeModel selectNodeModel,
+        public bool RemoveNodeItemByNodeList(TreeNodeModel selectNodeModel,
             ObservableCollection<TreeNodeModel> nodeModels, List<TreeNodeModel> removeNodeModelList)
         {
             foreach (var treeNodeModel in nodeModels ?? TreeHelper.NodeList)
@@ -345,7 +366,7 @@ namespace TreeLibrary
                             }
                         }
 
-                        TreeHelper.NodeList.RemoveAt(TreeHelper.NodeList.IndexOf(treeNodeModel));
+                        this.TreeHelper.NodeList.RemoveAt(TreeHelper.NodeList.IndexOf(treeNodeModel));
                     }
 
                     return true;

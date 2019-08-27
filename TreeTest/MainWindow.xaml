@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="树控件测试" Height="800" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="70" />
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Name="TreeStackPanel" />
@@ -22,6 +23,15 @@
             <Button Content="删除选中节点" Margin="13" Click="ButtonBaseRemoveSelectNodeItem_OnClick" />
             <Button Content="删除所有Check选中节点" Margin="13" Click="ButtonBaseRemoveCheckItem_OnClick" />
         </WrapPanel>
-        <TreeView Name="TextTreeDrag" Grid.Row="2" />
+        <GroupBox Header="设备上下线" Grid.Row="2">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Content="启动下线功能" Name="BeginOffLine" Margin="13" Click="ButtonNodeOffLine_OnClick" />
+                <Button Content="停止下线功能" Margin="13" Click="ButtonNodeOffLineEnd_OnClick" />
+                <Button Content="启动上线功能" Margin="13" Name="BeginOnLine" Click="ButtonNodeOnLine_OnClick" />
+                <Button Content="停止上线功能" Margin="13" Click="ButtonNodeOnLineEnd_OnClick" /> 
+                
+            </StackPanel>
+        </GroupBox>
+        <TreeView Name="TextTreeDrag" Grid.Row="3" />
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -16,8 +17,9 @@ namespace TreeLibrary.Model
         private string _iconImage;
         private readonly TreeNodeModel _dummyChild;
 
+        private Dictionary<bool, TreeNodeModel> _isVisibility = new Dictionary<bool, TreeNodeModel>();
 
-        private readonly ObservableCollection<TreeNodeModel> _subNodes = new ObservableCollection<TreeNodeModel>();
+        private  ObservableCollection<TreeNodeModel> _subNodes = new ObservableCollection<TreeNodeModel>();
 
         private DataModel _data;
 
@@ -27,6 +29,16 @@ namespace TreeLibrary.Model
             set
             {
                 this._data = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public Dictionary<bool, TreeNodeModel> IsVisibility
+        {
+            get => _isVisibility;
+            set
+            {
+                this._isVisibility = value;
                 this.OnPropertyChanged();
             }
         }
@@ -204,6 +216,8 @@ namespace TreeLibrary.Model
 
             subNode.Parent = this;
             this._subNodes.Add(subNode);
+
+            subNode.IsVisibility.Add(true, this);
         }
 
         public ObservableCollection<TreeNodeModel> SubNodes

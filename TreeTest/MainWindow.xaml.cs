@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -32,6 +33,8 @@ namespace TreeTest
 
         private TreeControl _treeControl;
         private Timer _timer;
+        private Timer _beginOffLineTime;
+        private Timer _beginOnLineTime;
         private readonly Random _random = new Random();
 
         private readonly FileDropConsumer _fileDropDataConsumer =
@@ -56,6 +59,9 @@ namespace TreeTest
             InitializeComponent();
 
             Compose();
+
+
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             #region NodeOperator
 
@@ -204,6 +210,8 @@ namespace TreeTest
             TreeStackPanel.Children.Clear();
             if (_timer != null)
                 _timer.Stop();
+            if (_beginOffLineTime != null)
+                _beginOffLineTime.Stop();
         }
 
         private void ButtonBaseCreateTree_OnClick(object sender, RoutedEventArgs e)
@@ -252,10 +260,7 @@ namespace TreeTest
             #region Add Menu RouteHandler
 
             var routeHandler = new Dictionary<RoutedEvent, Delegate>();
-            var delegateAllExpandedSubEvent = new RoutedEventHandler((o, args) =>
-            {
-                AllExpandedSubNode();
-            });
+            var delegateAllExpandedSubEvent = new RoutedEventHandler((o, args) => { AllExpandedSubNode(); });
             routeHandler.Add(MenuItem.ClickEvent, delegateAllExpandedSubEvent);
 
             var allCombineRouteRouteHandler = new Dictionary<RoutedEvent, Delegate>();
@@ -621,6 +626,102 @@ namespace TreeTest
                                 _treeControl.TreeSelectedNode);
                         });
                     });
+            }
+        }
+
+        private void ButtonNodeOffLine_OnClick(object sender, RoutedEventArgs e)
+        {
+            _beginOffLineTime = new Timer
+            {
+                Enabled = true,
+                Interval = 10
+            };
+            _beginOffLineTime.Start();
+            _beginOffLineTime.Elapsed += NodeOffLine;
+
+            BeginOffLine.IsEnabled = false;
+        }
+
+        private void ButtonNodeOnLine_OnClick(object sender, RoutedEventArgs e)
+        {
+            _beginOnLineTime = new Timer
+            {
+                Enabled = true,
+                Interval = 10
+            };
+            _beginOnLineTime.Start();
+            _beginOnLineTime.Elapsed += NodeOnLine;
+
+            BeginOnLine.IsEnabled = false;
+        }
+
+        private void ButtonNodeOffLineEnd_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (_beginOffLineTime == null)
+                return;
+            _beginOffLineTime.Enabled = false;
+            _beginOffLineTime.Stop();
+
+            BeginOffLine.IsEnabled = true;
+        }
+
+        private void NodeOffLine(object sender, ElapsedEventArgs e)
+        {
+            TreeNodeModel offLineNode = _treeControl.TreeHelper
+                .TreeAllNodels[_random.Next(0, _treeControl.TreeHelper.TreeAllNodels.Count)];
+            if (offLineNode.IsVisibility.Count <= 0 || offLineNode.IsVisibility.First().Key == false)
+                return;
+
+            var nodeParent = offLineNode.IsVisibility.Values.First();
+            offLineNode.IsVisibility.Clear();
+            offLineNode.IsVisibility.Add(false, nodeParent);
+            lock (_treeControl.TreeHelper
+                .TreeAllNodels)
+            {
+                Task.Run(() =>
+                {
+                    Application.Current.Dispatcher.Invoke(() => { _treeControl.RemoveNodeItem(offLineNode); });
+                });
+            }
+
+            if (_treeControl.TreeHelper
+                    .TreeAllNodels.Where(f => f.IsVisibility.ContainsKey(true)).ToList().Count <= 0)
+                _beginOffLineTime.Stop();
+        }
+
+
+        private void ButtonNodeOnLineEnd_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (_beginOnLineTime == null)
+                return;
+            _beginOnLineTime.Enabled = false;
+            _beginOnLineTime.Stop();
+
+            BeginOnLine.IsEnabled = true;
+        }
+
+        private void NodeOnLine(object sender, ElapsedEventArgs e)
+        {
+            var offLineNode = _treeControl.TreeHelper
+                .TreeAllNodels.Where(f => f.IsVisibility.ContainsKey(false)).ToList();
+            if (offLineNode.Count > 0)
+            {
+                var onLineNode = offLineNode[_random.Next(0, offLineNode.Count)];
+                var nodeParent = onLineNode.IsVisibility.Values.First();
+                onLineNode.IsVisibility.Clear();
+                onLineNode.IsVisibility.Add(true, nodeParent);
+                lock (_treeControl.TreeHelper
+                    .TreeAllNodels)
+                {
+                    Task.Run(() =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() => { nodeParent.AddSubNode(onLineNode); });
+                    });
+                }
+            }
+            else
+            {
+                _beginOnLineTime.Stop();
             }
         }
     }
