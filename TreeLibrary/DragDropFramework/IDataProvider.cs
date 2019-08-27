@@ -191,10 +191,10 @@ namespace TreeLibrary.DragDropFramework
         {
             foreach (IDataProvider dragDropObject in this._dragDropObjects)
             {
-                if ((e.OriginalSource as TextBlock) == null)
+                if ((e.OriginalSource as FrameworkElement) == null)
                     return;
                 if (dragDropObject.IsSupportedContainerAndObject(true, sender,
-                    (e.OriginalSource as TextBlock).DataContext, e.OriginalSource))
+                    ((FrameworkElement)e.OriginalSource).DataContext, e.OriginalSource))
                 {
                     Debug.Assert(sender.Equals(this._dragSource));
 
@@ -219,11 +219,11 @@ namespace TreeLibrary.DragDropFramework
         /// </summary>
         private void DragSource_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if ((e.OriginalSource as TextBlock) == null)
+            if ((e.OriginalSource as FrameworkElement) == null)
                 return;
             if ((this._dragDropObject != null) && !this._dragInProgress &&
                 this._dragDropObject.IsSupportedContainerAndObject(false, sender,
-                    (e.OriginalSource as TextBlock).DataContext, e.OriginalSource))
+                    ((FrameworkElement)e.OriginalSource).DataContext, e.OriginalSource))
             {
                 Point currentPosition = e.GetPosition(sender as IInputElement);
                 if (((Math.Abs(currentPosition.X - this._startPosition.X) >

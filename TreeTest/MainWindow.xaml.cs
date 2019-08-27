@@ -13,7 +13,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using TreeLibrary;
 using TreeLibrary.Converter;
-using TreeLibrary.Delegate;
 using TreeLibrary.DragDropFramework;
 using TreeLibrary.Model;
 using TreeLibrary.NodeItem;
@@ -253,7 +252,10 @@ namespace TreeTest
             #region Add Menu RouteHandler
 
             var routeHandler = new Dictionary<RoutedEvent, Delegate>();
-            var delegateAllExpandedSubEvent = new RoutedEventHandler((o, args) => { AllExpandedSubNode(); });
+            var delegateAllExpandedSubEvent = new RoutedEventHandler((o, args) =>
+            {
+                AllExpandedSubNode();
+            });
             routeHandler.Add(MenuItem.ClickEvent, delegateAllExpandedSubEvent);
 
             var allCombineRouteRouteHandler = new Dictionary<RoutedEvent, Delegate>();
@@ -515,7 +517,6 @@ namespace TreeTest
                 checkBoxElementFactory.SetValue(Control.IsTabStopProperty, false);
                 checkBoxElementFactory.SetValue(UIElement.FocusableProperty, false);
 
-
                 checkBoxElementFactory.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty,
                     new Binding(nameof(TreeNodeModel.IsChecked)));
                 checkBoxElementFactory.SetBinding(UIElement.VisibilityProperty,
@@ -538,7 +539,6 @@ namespace TreeTest
                     imageElementFactory.SetValue(Grid.ColumnProperty, 2);
                     gridElementFactory.AppendChild(imageElementFactory);
                 }
-
 
                 var textBlockElementFactory = new FrameworkElementFactory(typeof(TextBlock));
                 textBlockElementFactory.SetValue(FrameworkElement.HorizontalAlignmentProperty,

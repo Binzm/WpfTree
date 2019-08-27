@@ -155,8 +155,9 @@ namespace TreeLibrary.DragDropFramework
             {
                 TContainer dragSourceContainer = dataProvider.SourceContainer as TContainer;
                 TreeNodeModel dragSourceObject = dataProvider.SourceObject as TreeNodeModel;
+
                 Debug.Assert(dragSourceContainer != null);
-                Debug.Assert(dragSourceObject != null);
+                //Debug.Assert(dragSourceObject != null);
 
                 TContainer dropContainer =
                     Utilities.FindParentControlIncludingMe<TContainer>(sender as DependencyObject);
