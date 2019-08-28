@@ -37,25 +37,15 @@ namespace TreeLibrary
 
         public TreeHelper TreeHelper = new TreeHelper();
 
-        //private readonly FileDropConsumer _fileDropDataConsumer =
-        //    new FileDropConsumer(new string[]
-        //    {
-        //        "FileDrop",
-        //        "FileNameW"
-        //    });
-
-        protected bool IsDragDrop;
-        private bool _mIsMouseDown;
-        private Point _mStartPoint;
 
         public static readonly DependencyProperty AutoCompleteIsShowProperty;
-        public static readonly DependencyProperty AllowDropProperty;
+        public static readonly DependencyProperty AllowTreeDropProperty;
 
 
-        public bool IsAllowDrop
+        public bool IsAllowTreeDrop
         {
-            get => (bool) GetValue(TreeControl.AllowDropProperty);
-            set => SetValue(TreeControl.AllowDropProperty, value);
+            get => (bool) GetValue(TreeControl.AllowTreeDropProperty);
+            set => SetValue(TreeControl.AllowTreeDropProperty, value);
         }
 
         public bool AutoCompleteIsShow
@@ -97,12 +87,12 @@ namespace TreeLibrary
                 _currentTreeLibraryControlRoutedAddHandler = loadDataAndTemplate.GetTreeLibraryRoutedHandler();
                 loadDataAndTemplate.SetStyle(_modelTyeAndItemTypeDictionary.Values.ToList(), this.Resources);
                 _menuRouteAndHandlerDictionary = loadDataAndTemplate.GetMenuRouteAndHandlerDictionary();
-                this.IsAllowDrop = loadDataAndTemplate.GetIsAllowDrop();
+                this.IsAllowTreeDrop = loadDataAndTemplate.GetIsAllowDrop();
             }
             else
             {
                 LoadModelTypeAndItemType();
-                this.IsAllowDrop = false;
+                this.IsAllowTreeDrop = false;
             }
 
             LoadHierarchicalDataTemplate();
@@ -111,67 +101,16 @@ namespace TreeLibrary
             CollectionChangedEventManager.AddHandler(TreeHelper.TreeAllNodels, TreeNodeItem_NodeOperator);
 
             AddMenuItem();
-           
-            
-
-            if (!this.IsAllowDrop)
-                return;
             ThisTreeAddHandler();
             ThisControlAddHandler();
         }
-     
-
-        #region Abandon
-        //private void TreeDragOver(object sender, DragEventArgs e)
-        //{
-        //    NodeDragOver?.Invoke(sender, e);
-        //}
-
-        //private void TreePreviewMouseMove(object sender, MouseEventArgs e)
-        //{
-        //    var treeViewItems = sender as TreeView;
-        //    if (e.LeftButton == MouseButtonState.Pressed && !IsDragDrop)
-        //    {
-        //        if (e.LeftButton == MouseButtonState.Pressed && !IsDragDrop)
-        //        {
-        //            Point position = e.GetPosition(null);
-
-        //            if (Math.Abs(position.X - _mStartPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
-        //                Math.Abs(position.Y - _mStartPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
-        //            {
-        //                if ((e.OriginalSource as TextBlock) == null)
-        //                    return;
-
-        //                IsDragDrop = true;
-        //                DragDropEffects de =
-        //                    DragDrop.DoDragDrop(treeViewItems,
-        //                        new DragDropArgs((e.OriginalSource as TextBlock).DataContext as TreeNodeModel),
-        //                        DragDropEffects.Copy);
-        //                IsDragDrop = false;
-        //            }
-        //        }
-        //    }
-
-        //    NodePreviewMouseMove?.Invoke(sender, e);
-        //}
-
-        //private void TreeMouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    NodeMouseLeave?.Invoke(sender, e);
-        //}
-
-        //private void TreePreviewMouseUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    NodePreviewMouseUp?.Invoke(sender, e);
-        //} 
-        #endregion
 
         static TreeControl()
         {
             AutoCompleteIsShowProperty =
                 DependencyProperty.Register("AutoCompleteIsShow", typeof(bool), typeof(TreeControl),
                     new PropertyMetadata(false));
-            AllowDropProperty = DependencyProperty.Register("IsAllowDrop", typeof(bool), typeof(TreeControl),
+            AllowTreeDropProperty = DependencyProperty.Register("IsAllowTreeDrop", typeof(bool), typeof(TreeControl),
                 new PropertyMetadata(false));
         }
 
@@ -384,19 +323,6 @@ namespace TreeLibrary
             }
         }
 
-        private void TreeView_OnMouseMove(object sender, MouseEventArgs e)
-        {
-            if (this._mIsMouseDown && this.CanDrag)
-            {
-                Point position = e.GetPosition(this);
-                if (Math.Abs(position.X - this._mStartPoint.X) > 0 || Math.Abs(position.Y - this._mStartPoint.Y) > 0)
-                {
-                    DragDrop.DoDragDrop(this, e.Source, DragDropEffects.Copy);
-                    this._mIsMouseDown = false;
-                }
-            }
-        }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -478,7 +404,7 @@ namespace TreeLibrary
 
         private void SelectedNode(TreeNodeModel searchNode)
         {
-            TreeNodeModel node = this.FindNode(searchNode, this.TreeHelper.NodeList);
+            var node = this.FindNode(searchNode, this.TreeHelper.NodeList);
             if (node != null)
             {
                 ExpandTreeViewItem(node);
@@ -491,11 +417,10 @@ namespace TreeLibrary
 
         private void ExpandTreeViewItem(TreeNodeModel item)
         {
-            if (item.Parent is TreeNodeModel)
-            {
-                item.Parent.IsExpanded = true;
-                this.ExpandTreeViewItem(item.Parent as TreeNodeModel);
-            }
+            if (item.Parent == null)
+                return;
+            item.Parent.IsExpanded = true;
+            this.ExpandTreeViewItem(item.Parent);
         }
 
         private static TreeViewItem FindTreeViewItem(ItemsControl item, object data)
@@ -610,7 +535,7 @@ namespace TreeLibrary
             var menu = new ContextMenu();
             foreach (var routeAndHandlerItem in _menuRouteAndHandlerDictionary)
             {
-                MenuItem menuItem = new MenuItem
+                var menuItem = new MenuItem
                 {
                     Header = routeAndHandlerItem.Key
                 };

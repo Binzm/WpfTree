@@ -78,13 +78,6 @@ namespace TreeTest
             #endregion
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            _container?.Dispose();
-            base.OnClosing(e);
-        }
-
-
         //private void TreeNodeOperator(object sender, NotifyCollectionChangedEventArgs e)
         //{
         //    switch (e.Action)
@@ -102,6 +95,15 @@ namespace TreeTest
         //    }
 
         //}
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            _container?.Dispose();
+            base.OnClosing(e);
+        }
+
+
+     
 
 
         private void Compose()
