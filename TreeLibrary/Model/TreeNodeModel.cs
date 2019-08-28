@@ -19,7 +19,7 @@ namespace TreeLibrary.Model
 
         private Dictionary<bool, TreeNodeModel> _isVisibility = new Dictionary<bool, TreeNodeModel>();
 
-        private  ObservableCollection<TreeNodeModel> _subNodes = new ObservableCollection<TreeNodeModel>();
+        private ObservableCollection<TreeNodeModel> _subNodes = new ObservableCollection<TreeNodeModel>();
 
         private DataModel _data;
 
@@ -216,6 +216,10 @@ namespace TreeLibrary.Model
 
             subNode.Parent = this;
             this._subNodes.Add(subNode);
+            if (subNode.IsVisibility == null)
+                subNode.IsVisibility = new Dictionary<bool, TreeNodeModel>();
+            else
+                subNode.IsVisibility.Clear();
 
             subNode.IsVisibility.Add(true, this);
         }
