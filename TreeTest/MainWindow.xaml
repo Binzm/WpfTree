@@ -25,9 +25,9 @@
         </WrapPanel>
         <GroupBox Header="设备上下线" Grid.Row="2">
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Content="启动下线功能" Name="BeginOffLine" Margin="13" Click="ButtonNodeOffLine_OnClick" />
+                <Button Content="启动下线功能" Name="BeginOffLineButton" Margin="13" Click="ButtonNodeOffLine_OnClick" />
                 <Button Content="停止下线功能" Margin="13" Click="ButtonNodeOffLineEnd_OnClick" />
-                <Button Content="启动上线功能" Margin="13" Name="BeginOnLine" Click="ButtonNodeOnLine_OnClick" />
+                <Button Content="启动上线功能" Margin="13" Name="BeginOnLineButton" Click="ButtonNodeOnLine_OnClick" />
                 <Button Content="停止上线功能" Margin="13" Click="ButtonNodeOnLineEnd_OnClick" />
                 <TextBlock Name="OnLineEquipmentTextBlock"  Margin="13" ></TextBlock>
                 <TextBlock Name="OffLineEquipmentTextBlock"  Margin="13" ></TextBlock>

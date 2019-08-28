@@ -159,7 +159,7 @@ namespace TreeLibrary.NodeItem.BaseItem
 
         protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
         {
-            var treeViewItem = VisualUpwardSearch<TreeViewItem>(e.OriginalSource as DependencyObject) as TreeViewItem;
+            var treeViewItem = (TreeViewItem)VisualUpwardSearch<TreeViewItem>(e.OriginalSource as DependencyObject);
             if (treeViewItem != null)
             {
                 treeViewItem.Focus();

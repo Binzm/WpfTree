@@ -362,6 +362,7 @@ namespace TreeLibrary.DragDropFramework
             catch(Exception exception)
             {
                 Debug.WriteLine("DragDrop.DoDragDrop threw an exception");
+                e.Handled = true;
             }
 
 

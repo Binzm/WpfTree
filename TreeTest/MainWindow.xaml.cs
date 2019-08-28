@@ -12,11 +12,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using ICMS.IntelligentAuxiliarySystem.Extensions;
 using TreeLibrary;
 using TreeLibrary.Converter;
 using TreeLibrary.DragDropFramework;
-using TreeLibrary.Extensions;
 using TreeLibrary.Model;
 using TreeLibrary.NodeItem;
 using TreeLibrary.NodeItem.BaseItem;
@@ -39,12 +37,7 @@ namespace TreeTest
         private Timer _beginOnLineTime;
         private readonly Random _random = new Random();
 
-        private readonly FileDropConsumer _fileDropDataConsumer =
-            new FileDropConsumer(new string[]
-            {
-                "FileDrop",
-                "FileNameW"
-            });
+      
 
         private readonly string[] _colorStrings = new string[]
         {
@@ -328,7 +321,7 @@ namespace TreeTest
                     Name = "添加多个子集的节点"
                 }
             };
-            iteModels[1].AddSubNode(new ThreeLevelTreeNodeModel()
+            iteModels[1].AddSubNode(new ChannelsTreeNodeModel()
             {
                 Data = new DataModel {Id = "1"},
                 Name = "一级子节点"
@@ -563,7 +556,7 @@ namespace TreeTest
 
                 controlTemplate.VisualTree = gridElementFactory;
                 var setter = new Setter
-                    {Property = System.Windows.Controls.Control.TemplateProperty, Value = controlTemplate};
+                    {Property = TemplateProperty, Value = controlTemplate};
                 tempStyle.Setters.Add(setter);
 
                 resultStyles.Add(tempStyle);
@@ -582,7 +575,7 @@ namespace TreeTest
         {
             if (instance != null && !string.IsNullOrEmpty(propertyName))
             {
-                var findPropertyInfo = (instance as Type).GetProperty(propertyName);
+                var findPropertyInfo = ((Type) instance)?.GetProperty(propertyName);
                 return (findPropertyInfo != null);
             }
 
@@ -641,7 +634,7 @@ namespace TreeTest
             _beginOffLineTime.Start();
             _beginOffLineTime.Elapsed += NodeOffLine;
 
-            BeginOffLine.IsEnabled = false;
+            BeginOffLineButton.IsEnabled = false;
         }
 
         private void ButtonNodeOnLine_OnClick(object sender, RoutedEventArgs e)
@@ -649,12 +642,12 @@ namespace TreeTest
             _beginOnLineTime = new Timer
             {
                 Enabled = true,
-                Interval = 100
+                Interval = 3
             };
             _beginOnLineTime.Start();
             _beginOnLineTime.Elapsed += NodeOnLine;
 
-            BeginOnLine.IsEnabled = false;
+            BeginOnLineButton.IsEnabled = false;
         }
 
         private void ButtonNodeOffLineEnd_OnClick(object sender, RoutedEventArgs e)
@@ -664,7 +657,7 @@ namespace TreeTest
             _beginOffLineTime.Enabled = false;
             _beginOffLineTime.Stop();
 
-            BeginOffLine.IsEnabled = true;
+            BeginOffLineButton.IsEnabled = true;
         }
 
         private void NodeOffLine(object sender, ElapsedEventArgs e)
@@ -689,13 +682,7 @@ namespace TreeTest
                     OffLineEquipmentTextBlock.Text =
                         $"当前离线设备数：{(_treeControl.TreeHelper.TreeAllNodels.Count - onLineNodeList.Count)}";
                 });
-
-              
             });
-
-            if (_treeControl.TreeHelper
-                    .TreeAllNodels.Where(f => f.IsVisibility.ContainsKey(true)).ToList().Count <= 0)
-                _beginOffLineTime.Stop();
         }
 
 
@@ -706,7 +693,7 @@ namespace TreeTest
             _beginOnLineTime.Enabled = false;
             _beginOnLineTime.Stop();
 
-            BeginOnLine.IsEnabled = true;
+            BeginOnLineButton.IsEnabled = true;
         }
 
         private void NodeOnLine(object sender, ElapsedEventArgs e)
@@ -717,29 +704,21 @@ namespace TreeTest
                 {
                     var offLineNode = _treeControl.TreeHelper
                         .TreeAllNodels.Where(f => f.IsVisibility.ContainsKey(false)).ToList();
-                    if (offLineNode.Count > 0)
-                    {
-                        var onLineNode = offLineNode[_random.Next(0, offLineNode.Count - 1)];
-                        var nodeParent = onLineNode.IsVisibility.Values.First();
-                        onLineNode.IsVisibility.Clear();
-                        onLineNode.IsVisibility.Add(true, nodeParent);
-                        nodeParent.AddSubNode(onLineNode);
+                    if (offLineNode.Count <= 0)
+                        return;
 
-                        OnLineEquipmentTextBlock.Text = $"当前在线设备数：{(_treeControl.TreeHelper.TreeAllNodels.Count - offLineNode.Count)}";
-                        OffLineEquipmentTextBlock.Text =
-                            $"当前离线设备数：{offLineNode.Count - 1}";
-                    }
-                    else
-                    {
-                        _beginOnLineTime.Stop();
-                    }
+                    var onLineNode = offLineNode[_random.Next(0, offLineNode.Count - 1)];
+                    var nodeParent = onLineNode.IsVisibility.Values.First();
+                    onLineNode.IsVisibility.Clear();
+                    onLineNode.IsVisibility.Add(true, nodeParent);
+                    nodeParent.AddSubNode(onLineNode);
+
+                    OnLineEquipmentTextBlock.Text =
+                        $"当前在线设备数：{(_treeControl.TreeHelper.TreeAllNodels.Count - offLineNode.Count)}";
+                    OffLineEquipmentTextBlock.Text =
+                        $"当前离线设备数：{offLineNode.Count - 1}";
                 });
             });
-
-            //else
-            //{
-            //    _beginOnLineTime.Stop();
-            //}
         }
     }
 }

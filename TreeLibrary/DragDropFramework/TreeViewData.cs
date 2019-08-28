@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -176,6 +177,8 @@ namespace TreeLibrary.DragDropFramework
                         {
                             ((TreeHelper) ((Grid) e.OriginalSource).DataContext)?.NodeList.Add(
                                 dragSourceObject);
+                            e.Effects = DragDropEffects.Move;
+                            e.Handled = true;
                             return;
                         }
 
@@ -249,7 +252,11 @@ namespace TreeLibrary.DragDropFramework
         {
             try
             {
+                if (dragSourceObject == null)
+                    return false;
                 if ((originalSource as FrameworkElement) == null)
+                    return false;
+                if ((((FrameworkElement) originalSource).DataContext as TreeHelper)!=null)
                     return false;
 
                 var treeNodeModel = ((TreeNodeModel) ((FrameworkElement) originalSource).DataContext);
@@ -261,7 +268,7 @@ namespace TreeLibrary.DragDropFramework
 
                 return IsDragDropSubNode(dragSourceObject.SubNodes, treeNodeModel);
             }
-            catch
+            catch(Exception ex)
             {
                 return false;
             }

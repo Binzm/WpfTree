@@ -31,7 +31,8 @@ namespace TreeLibrary
 
         private Dictionary<Type, Type> _modelTyeAndItemTypeDictionary;
 
-
+        private readonly Dictionary<RoutedEvent, System.Delegate> _currentTreeRoutedAddHandler;
+        private readonly Dictionary<RoutedEvent, System.Delegate> _currentTreeLibraryControlRoutedAddHandler;
         private readonly Dictionary<string, Dictionary<RoutedEvent, System.Delegate>> _menuRouteAndHandlerDictionary;
 
         public TreeHelper TreeHelper = new TreeHelper();
@@ -92,6 +93,8 @@ namespace TreeLibrary
             if (loadDataAndTemplate != null)
             {
                 _modelTyeAndItemTypeDictionary = loadDataAndTemplate.GetLogicDictionary();
+                _currentTreeRoutedAddHandler = loadDataAndTemplate.GetTreeRoutedHandler();
+                _currentTreeLibraryControlRoutedAddHandler = loadDataAndTemplate.GetTreeLibraryRoutedHandler();
                 loadDataAndTemplate.SetStyle(_modelTyeAndItemTypeDictionary.Values.ToList(), this.Resources);
                 _menuRouteAndHandlerDictionary = loadDataAndTemplate.GetMenuRouteAndHandlerDictionary();
                 this.IsAllowDrop = loadDataAndTemplate.GetIsAllowDrop();
@@ -106,75 +109,62 @@ namespace TreeLibrary
             InitHierarchicalDataTemplateResource();
             base.DataContext = this.TreeHelper;
             CollectionChangedEventManager.AddHandler(TreeHelper.TreeAllNodels, TreeNodeItem_NodeOperator);
-            AddMenuItem();
 
+            AddMenuItem();
+           
+            
 
             if (!this.IsAllowDrop)
                 return;
-
-            //this.TreeView.PreviewMouseUp += TreePreviewMouseUp;
-            //this.TreeView.MouseLeave += TreeMouseLeave;
-            //this.TreeView.PreviewMouseMove += TreePreviewMouseMove;
-            //this.TreeView.DragOver += TreeDragOver;
-
-
-            //TreeViewDataProvider<ItemsControl, TreeViewItem> treeViewDataProvider =
-            //    new TreeViewDataProvider<ItemsControl, TreeViewItem>("TreeViewItem");
-            //TreeViewDataConsumer<ItemsControl, TreeViewItem> treeViewDataConsumer =
-            //    new TreeViewDataConsumer<ItemsControl, TreeViewItem>(new string[] { "TreeViewItem" });
-
-            ////treeViewDataConsumer.DropDragHandler += DropDragHandler;
-
-            //_ = new DragManager(TreeView, treeViewDataProvider);
-            //_ = new DropManager(TreeView,
-            //    new IDataConsumer[] {
-            //        treeViewDataConsumer,
-            //        _fileDropDataConsumer,
-            //    });
+            ThisTreeAddHandler();
+            ThisControlAddHandler();
         }
+     
 
-        private void TreeDragOver(object sender, DragEventArgs e)
-        {
-            NodeDragOver?.Invoke(sender, e);
-        }
+        #region Abandon
+        //private void TreeDragOver(object sender, DragEventArgs e)
+        //{
+        //    NodeDragOver?.Invoke(sender, e);
+        //}
 
-        private void TreePreviewMouseMove(object sender, MouseEventArgs e)
-        {
-            var treeViewItems = sender as TreeView;
-            if (e.LeftButton == MouseButtonState.Pressed && !IsDragDrop)
-            {
-                if (e.LeftButton == MouseButtonState.Pressed && !IsDragDrop)
-                {
-                    Point position = e.GetPosition(null);
+        //private void TreePreviewMouseMove(object sender, MouseEventArgs e)
+        //{
+        //    var treeViewItems = sender as TreeView;
+        //    if (e.LeftButton == MouseButtonState.Pressed && !IsDragDrop)
+        //    {
+        //        if (e.LeftButton == MouseButtonState.Pressed && !IsDragDrop)
+        //        {
+        //            Point position = e.GetPosition(null);
 
-                    if (Math.Abs(position.X - _mStartPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                        Math.Abs(position.Y - _mStartPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
-                    {
-                        if ((e.OriginalSource as TextBlock) == null)
-                            return;
+        //            if (Math.Abs(position.X - _mStartPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
+        //                Math.Abs(position.Y - _mStartPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
+        //            {
+        //                if ((e.OriginalSource as TextBlock) == null)
+        //                    return;
 
-                        IsDragDrop = true;
-                        DragDropEffects de =
-                            DragDrop.DoDragDrop(treeViewItems,
-                                new DragDropArgs((e.OriginalSource as TextBlock).DataContext as TreeNodeModel),
-                                DragDropEffects.Copy);
-                        IsDragDrop = false;
-                    }
-                }
-            }
+        //                IsDragDrop = true;
+        //                DragDropEffects de =
+        //                    DragDrop.DoDragDrop(treeViewItems,
+        //                        new DragDropArgs((e.OriginalSource as TextBlock).DataContext as TreeNodeModel),
+        //                        DragDropEffects.Copy);
+        //                IsDragDrop = false;
+        //            }
+        //        }
+        //    }
 
-            NodePreviewMouseMove?.Invoke(sender, e);
-        }
+        //    NodePreviewMouseMove?.Invoke(sender, e);
+        //}
 
-        private void TreeMouseLeave(object sender, MouseEventArgs e)
-        {
-            NodeMouseLeave?.Invoke(sender, e);
-        }
+        //private void TreeMouseLeave(object sender, MouseEventArgs e)
+        //{
+        //    NodeMouseLeave?.Invoke(sender, e);
+        //}
 
-        private void TreePreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            NodePreviewMouseUp?.Invoke(sender, e);
-        }
+        //private void TreePreviewMouseUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    NodePreviewMouseUp?.Invoke(sender, e);
+        //} 
+        #endregion
 
         static TreeControl()
         {
@@ -339,6 +329,8 @@ namespace TreeLibrary
         {
             foreach (var treeNodeModel in nodeModels ?? TreeHelper.NodeList)
             {
+                if (treeNodeModel == null)
+                    return false;
                 if (treeNodeModel.Data.Id == selectNodeModel.Data.Id)
                 {
                     if (nodeModels != null)
@@ -573,40 +565,40 @@ namespace TreeLibrary
         public event SearchContentSelectChangedHandler SearchContentSelectChanged;
         public event NodeOperatorHandler NodeOperator;
 
-        public event DragOverHandler NodeDragOver;
-        public event PreviewMouseMoveHandler NodePreviewMouseMove;
-        public event MouseLeaveHandler NodeMouseLeave;
-        public event PreviewMouseUpHandler NodePreviewMouseUp;
+        //public event DragOverHandler NodeDragOver;
+        //public event PreviewMouseMoveHandler NodePreviewMouseMove;
+        //public event MouseLeaveHandler NodeMouseLeave;
+        //public event PreviewMouseUpHandler NodePreviewMouseUp;
 
         #endregion
 
         #region 自定义方法
 
-        /// <summary>
-        /// 获取同类型的数节点实体
-        /// </summary>
-        /// <param name="modelType">要获取的实体Type</param>
-        /// <param name="treeNodeModels">开始搜索的节点集合（不填写默认从根节点开始查找）</param>
-        /// <returns></returns>
-        public List<TreeNodeModel> FindModelsTypeTreeItem(Type modelType,
-            ObservableCollection<TreeNodeModel> treeNodeModels = null)
-        {
-            List<TreeNodeModel> resultItems = new List<TreeNodeModel>();
-            foreach (var nodeModelItem in treeNodeModels ?? TreeHelper.NodeList)
-            {
-                if (nodeModelItem.GetType() == modelType)
-                {
-                    resultItems.Add(nodeModelItem);
-                }
+        ///// <summary>
+        ///// 获取同类型的数节点实体
+        ///// </summary>
+        ///// <param name="modelType">要获取的实体Type</param>
+        ///// <param name="treeNodeModels">开始搜索的节点集合（不填写默认从根节点开始查找）</param>
+        ///// <returns></returns>
+        //public List<TreeNodeModel> FindModelsTypeTreeItem(Type modelType,
+        //    ObservableCollection<TreeNodeModel> treeNodeModels = null)
+        //{
+        //    List<TreeNodeModel> resultItems = new List<TreeNodeModel>();
+        //    foreach (var nodeModelItem in treeNodeModels ?? TreeHelper.NodeList)
+        //    {
+        //        if (nodeModelItem.GetType() == modelType)
+        //        {
+        //            resultItems.Add(nodeModelItem);
+        //        }
 
-                if (nodeModelItem.SubNodes != null)
-                {
-                    resultItems.AddRange(FindModelsTypeTreeItem(modelType, nodeModelItem.SubNodes));
-                }
-            }
+        //        if (nodeModelItem.SubNodes != null)
+        //        {
+        //            resultItems.AddRange(FindModelsTypeTreeItem(modelType, nodeModelItem.SubNodes));
+        //        }
+        //    }
 
-            return resultItems;
-        }
+        //    return resultItems;
+        //}
 
         #endregion
 
@@ -627,6 +619,32 @@ namespace TreeLibrary
             }
 
             TreeView.ContextMenu = menu;
+        }
+
+        /// <summary>
+        /// 为树节点添加路由事件
+        /// </summary>
+        private void ThisTreeAddHandler()
+        {
+            if (_currentTreeRoutedAddHandler == null)
+                return;
+            foreach (var treeRoutedAndHandler in _currentTreeRoutedAddHandler)
+            {
+                TreeView.AddHandler(treeRoutedAndHandler.Key, treeRoutedAndHandler.Value);
+            }
+        }
+
+        /// <summary>
+        /// 为当前控件添加路由事件
+        /// </summary>
+        private void ThisControlAddHandler()
+        {
+            if (_currentTreeRoutedAddHandler == null)
+                return;
+            foreach (var controlRoutedAndHandler in _currentTreeLibraryControlRoutedAddHandler)
+            {
+                AddHandler(controlRoutedAndHandler.Key, controlRoutedAndHandler.Value);
+            }
         }
     }
 }

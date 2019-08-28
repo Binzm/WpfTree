@@ -39,10 +39,22 @@ namespace TreeLibrary.Model
 
         public static Dictionary<string, Dictionary<RoutedEvent, System.Delegate>> CurrentLoadMenuRouteHandler;
 
+        public static Dictionary<RoutedEvent, System.Delegate> CurrentTreeRoutedAddHandler;
+        public static Dictionary<RoutedEvent, System.Delegate> CurrentTreeLibraryControlRoutedAddHandler;
 
         public bool GetIsAllowDrop()
         {
             return TreeNodeIsAllowDrop;
+        }
+
+        public Dictionary<RoutedEvent, System.Delegate> GetTreeRoutedHandler()
+        {
+            return CurrentTreeRoutedAddHandler;
+        }
+
+        public Dictionary<RoutedEvent, System.Delegate> GetTreeLibraryRoutedHandler()
+        {
+            return CurrentTreeLibraryControlRoutedAddHandler;
         }
 
         public Dictionary<Type, Type> GetLogicDictionary()
@@ -271,6 +283,8 @@ namespace TreeLibrary.Model
 
             return false;
         }
+
+      
 
         #endregion
     }
