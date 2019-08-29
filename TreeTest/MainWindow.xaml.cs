@@ -42,7 +42,7 @@ namespace TreeTest
         private readonly AsyncStack _asyncStack;
         private readonly Producer _producer;
         private Consumer _consumer;
-        private Timer _consumertimer;
+        private Timer _consumerTimer;
 
 
         private readonly string[] _colorStrings = new string[]
@@ -55,7 +55,6 @@ namespace TreeTest
             "Navy"
         };
 
-      
 
         public MainWindow()
         {
@@ -92,9 +91,6 @@ namespace TreeTest
                     });
 
             #endregion
-
-        
-
         }
 
         private void ExecuteConsumerExpense(object sender, ElapsedEventArgs e)
@@ -102,22 +98,6 @@ namespace TreeTest
             _consumer.RunConsume();
         }
 
-        private void GetThisTreeNodeCount()
-        {
-            if (_treeControl == null)
-                return;
-            try
-            {
-                int nodeCount = 0;
-                TreeNodeCountTextBlock.Text =
-                    $"当前树节点个数为：{GetNodeCount(_treeControl.TreeHelper.NodeList, nodeCount)}";
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
 
         private int GetNodeCount(IEnumerable<TreeNodeModel> nodeList, int counts)
         {
@@ -254,23 +234,21 @@ namespace TreeTest
         {
             _treeControl = null;
 
-            //container?.Dispose();
+            //container?.Dispose(); 
             TreeStackPanel.Children.Clear();
             if (_timer != null)
                 _timer.Stop();
             if (_beginOffLineTime != null)
                 _beginOffLineTime.Stop();
 
-            if(_consumertimer!=null)
-                _consumertimer.Stop();
+            if (_consumerTimer != null)
+                _consumerTimer.Stop();
         }
 
         private void ButtonBaseCreateTree_OnClick(object sender, RoutedEventArgs e)
         {
             if (_treeControl != null)
                 return;
-
-            //Compose();
 
             #region 加载自定义Model 和Item
 
@@ -417,31 +395,30 @@ namespace TreeTest
             #region 消费者开始消费
 
             _consumer = new Consumer(_asyncStack, _treeControl, this);
-            _consumertimer= new Timer
+            _consumerTimer = new Timer
             {
                 Enabled = true,
                 Interval = 8
             };
-            _consumertimer.Start();
-            _consumertimer.Elapsed += ExecuteConsumerExpense;
+            _consumerTimer.Start();
+            _consumerTimer.Elapsed += ExecuteConsumerExpense;
+
             #endregion
         }
 
         private void DropDragHandler(bool bDrop, object sender, DragEventArgs e)
         {
-            TreeViewDataProvider<ItemsControl, TreeViewItem> dataProvider =
+            var dataProvider =
                 (TreeViewDataProvider<ItemsControl, TreeViewItem>) this.GetData(e);
 
-            TreeNodeModel dragSourceObject = dataProvider.SourceObject as TreeNodeModel;
             if (bDrop)
             {
-                var dropTarget = e.Source as TreeView;
                 var treeView = (TreeView) sender;
                 if (treeView != null)
                 {
-                    if (dropTarget != null && dropTarget.Name == "TextTreeDrag")
+                    if (e.Source is TreeView dropTarget && dropTarget.Name == "TextTreeDrag")
                     {
-                        if (dragSourceObject != null)
+                        if (dataProvider.SourceObject is TreeNodeModel dragSourceObject)
                         {
                             treeView.Items.Add(new TreeViewItem {Header = dragSourceObject.Name});
                             e.Handled = true;
@@ -460,9 +437,9 @@ namespace TreeTest
         {
             object data = null;
             string[] dataFormats = e.Data.GetFormats();
-            foreach (string dataFormat in dataFormats)
+            foreach (var dataFormat in dataFormats)
             {
-                foreach (string dataFormatString in this._dataFormats)
+                foreach (var dataFormatString in this._dataFormats)
                 {
                     if (dataFormat.Equals(dataFormatString))
                     {
@@ -705,7 +682,20 @@ namespace TreeTest
             BeginOffLineButton.IsEnabled = false;
         }
 
-       
+        private void NodeOffLine(object sender, ElapsedEventArgs e)
+        {
+            new Thread(() => { _producer.RunProduction(false); }).Start();
+        }
+
+        private void ButtonNodeOffLineEnd_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (_beginOffLineTime == null)
+                return;
+            _beginOffLineTime.Enabled = false;
+            _beginOffLineTime.Stop();
+
+            BeginOffLineButton.IsEnabled = true;
+        }
 
         private void ButtonNodeOnLine_OnClick(object sender, RoutedEventArgs e)
         {
@@ -720,50 +710,10 @@ namespace TreeTest
             BeginOnLineButton.IsEnabled = false;
         }
 
-        private void ButtonNodeOffLineEnd_OnClick(object sender, RoutedEventArgs e)
+        private void NodeOnLine(object sender, ElapsedEventArgs e)
         {
-            if (_beginOffLineTime == null)
-                return;
-            _beginOffLineTime.Enabled = false;
-            _beginOffLineTime.Stop();
-
-            BeginOffLineButton.IsEnabled = true;
-            
+            new Thread(() => { _producer.RunProduction(true); }).Start();
         }
-
-        private void NodeOffLine(object sender, ElapsedEventArgs e)
-        {
-            new Thread(() => { _producer.RunProduction(false); }).Start();
-
-
-            //    var onLineNodeList = _treeControl.TreeHelper
-            //        .TreeAllNodels.Where(f => f.IsVisibility.ContainsKey(true)).ToList();
-            //    if (onLineNodeList.Count <= 0)
-            //        return;
-
-            //    var offLineNode = onLineNodeList[_random.Next(0, onLineNodeList.Count - 1)];
-
-            //    Task.Run(() =>
-            //    {
-            //        var nodeParent = offLineNode.IsVisibility.Values.First();
-            //        offLineNode.IsVisibility.Clear();
-            //        offLineNode.IsVisibility.Add(false, nodeParent);
-            //        Application.Current.Dispatcher.Invoke(() =>
-            //        {
-            //            _treeControl.RemoveNodeItem(offLineNode);
-
-            //            OnLineEquipmentTextBlock.Text = $"当前在线设备数：{(onLineNodeList.Count > 1 ? onLineNodeList.Count : 0)}";
-
-            //            var offLineEquipmentCount = onLineNodeList.Count > 1
-            //                ? (_treeControl.TreeHelper.TreeAllNodels.Count - onLineNodeList.Count)
-            //                : (_treeControl.TreeHelper.TreeAllNodels.Count - onLineNodeList.Count) + 1;
-            //            OffLineEquipmentTextBlock.Text =
-            //                $"当前离线设备数：{offLineEquipmentCount}";
-            //            GetThisTreeNodeCount();
-            //        });
-            //    });
-        }
-
 
         private void ButtonNodeOnLineEnd_OnClick(object sender, RoutedEventArgs e)
         {
@@ -773,36 +723,6 @@ namespace TreeTest
             _beginOnLineTime.Stop();
 
             BeginOnLineButton.IsEnabled = true;
-        }
-
-        private void NodeOnLine(object sender, ElapsedEventArgs e)
-        {
-            new Thread(() => { _producer.RunProduction(true); }).Start();
-            //Task.Run(() =>
-            //{
-            //    Application.Current.Dispatcher.Invoke(() =>
-            //    {
-            //        var offLineNode = _treeControl.TreeHelper
-            //            .TreeAllNodels.Where(f => f.IsVisibility.ContainsKey(false)).ToList();
-            //        if (offLineNode.Count <= 0)
-            //            return;
-
-            //        var onLineNode = offLineNode[_random.Next(0, offLineNode.Count - 1)];
-            //        var nodeParent = onLineNode.IsVisibility.Values.First();
-            //        onLineNode.IsVisibility = new Dictionary<bool, TreeNodeModel>
-            //        {
-            //            {true, nodeParent}
-            //        };
-            //        if (!nodeParent.SubNodes.Contains(onLineNode))
-            //            nodeParent.AddSubNode(onLineNode);
-
-            //        OnLineEquipmentTextBlock.Text =
-            //            $"当前在线设备数：{(_treeControl.TreeHelper.TreeAllNodels.Count - offLineNode.Count + 1)}";
-            //        OffLineEquipmentTextBlock.Text =
-            //            $"当前离线设备数：{offLineNode.Count - 1}";
-            //        GetThisTreeNodeCount();
-            //    });
-            //});
         }
     }
 }
