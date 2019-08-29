@@ -37,7 +37,6 @@ namespace TreeTest
         private Timer _beginOnLineTime;
         private readonly Random _random = new Random();
 
-      
 
         private readonly string[] _colorStrings = new string[]
         {
@@ -72,10 +71,40 @@ namespace TreeTest
 
             #region Task 
 
-            Task.Delay(10000)
+            Task.Delay(5000)
                 .ContinueWith(task => { _treeControl.TreeHelper.TreeAllNodels[1].TextBoxForeground = "red"; });
 
             #endregion
+        }
+
+        private void GetThisTreeNodeCount()
+        {
+            if (_treeControl == null)
+                return;
+            try
+            {
+                int nodeCount = 0;
+                TreeNodeCountTextBlock.Text =
+                    $"当前树节点个数为：{GetNodeCount(_treeControl.TreeHelper.NodeList, nodeCount)}";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private int GetNodeCount(IEnumerable<TreeNodeModel> nodeList, int counts)
+        {
+            int count = counts;
+            foreach (var nodeItem in nodeList)
+            {
+                count++;
+                if (nodeItem.SubNodes.Count > 0)
+                    count = GetNodeCount(nodeItem.SubNodes, count);
+            }
+
+            return count;
         }
 
         //private void TreeNodeOperator(object sender, NotifyCollectionChangedEventArgs e)
@@ -101,9 +130,6 @@ namespace TreeTest
             _container?.Dispose();
             base.OnClosing(e);
         }
-
-
-     
 
 
         private void Compose()
@@ -644,7 +670,7 @@ namespace TreeTest
             _beginOnLineTime = new Timer
             {
                 Enabled = true,
-                Interval = 3
+                Interval = 5
             };
             _beginOnLineTime.Start();
             _beginOnLineTime.Elapsed += NodeOnLine;
@@ -680,9 +706,13 @@ namespace TreeTest
                 {
                     _treeControl.RemoveNodeItem(offLineNode);
 
-                    OnLineEquipmentTextBlock.Text = $"当前在线设备数：{onLineNodeList.Count - 1}";
+                    OnLineEquipmentTextBlock.Text = $"当前在线设备数：{(onLineNodeList.Count > 1 ? onLineNodeList.Count :0 )}";
+                    int offLineEquipment = onLineNodeList.Count > 1
+                        ? (_treeControl.TreeHelper.TreeAllNodels.Count - onLineNodeList.Count)
+                        : (_treeControl.TreeHelper.TreeAllNodels.Count - onLineNodeList.Count) + 1;
                     OffLineEquipmentTextBlock.Text =
-                        $"当前离线设备数：{(_treeControl.TreeHelper.TreeAllNodels.Count - onLineNodeList.Count)}";
+                        $"当前离线设备数：{offLineEquipment}";
+                    GetThisTreeNodeCount();
                 });
             });
         }
@@ -711,14 +741,18 @@ namespace TreeTest
 
                     var onLineNode = offLineNode[_random.Next(0, offLineNode.Count - 1)];
                     var nodeParent = onLineNode.IsVisibility.Values.First();
-                    onLineNode.IsVisibility.Clear();
-                    onLineNode.IsVisibility.Add(true, nodeParent);
-                    nodeParent.AddSubNode(onLineNode);
+                    onLineNode.IsVisibility = new Dictionary<bool, TreeNodeModel>
+                    {
+                        {true, nodeParent}
+                    };
+                    if (!nodeParent.SubNodes.Contains(onLineNode))
+                        nodeParent.AddSubNode(onLineNode);
 
                     OnLineEquipmentTextBlock.Text =
-                        $"当前在线设备数：{(_treeControl.TreeHelper.TreeAllNodels.Count - offLineNode.Count)}";
+                        $"当前在线设备数：{(_treeControl.TreeHelper.TreeAllNodels.Count - offLineNode.Count + 1)}";
                     OffLineEquipmentTextBlock.Text =
                         $"当前离线设备数：{offLineNode.Count - 1}";
+                    GetThisTreeNodeCount();
                 });
             });
         }

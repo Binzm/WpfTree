@@ -14,6 +14,7 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Name="TreeStackPanel" />
         <WrapPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+          
             <Button Content="创建构造树" Margin="13" Click="ButtonBaseCreateTree_OnClick" />
             <Button Content="删除构造树" Margin="13" Click="ButtonBaseRemoveTree_OnClick" />
             <Button Content="添加单个子节点" Margin="13" Click="ButtonBase_OnClick" />
@@ -22,6 +23,7 @@
             <Button Content="在选中节点下添加多个节点" Margin="13" Click="ButtonBaseMultiAddNodeBySelectNode_OnClick" />
             <Button Content="删除选中节点" Margin="13" Click="ButtonBaseRemoveSelectNodeItem_OnClick" />
             <Button Content="删除所有Check选中节点" Margin="13" Click="ButtonBaseRemoveCheckItem_OnClick" />
+            <TextBlock Name="TreeNodeCountTextBlock" Margin="13 15 0 0"></TextBlock>
         </WrapPanel>
         <GroupBox Header="设备上下线" Grid.Row="2">
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
