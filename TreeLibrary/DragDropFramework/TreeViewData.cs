@@ -268,7 +268,7 @@ namespace TreeLibrary.DragDropFramework
 
                 return IsDragDropSubNode(dragSourceObject.SubNodes, treeNodeModel);
             }
-            catch(Exception ex)
+            catch
             {
                 return false;
             }

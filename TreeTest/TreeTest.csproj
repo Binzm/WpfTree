@@ -102,7 +102,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\ThreeLevelTreeNodeModel.cs" />
-    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="ProductAndCustomer\AsyncStack.cs" />
+    <Compile Include="ProductAndCustomer\Consumer.cs" />
+    <Compile Include="ProductAndCustomer\Producer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
