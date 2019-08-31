@@ -40,7 +40,6 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
@@ -62,7 +61,6 @@
     <Compile Include="DragDropFramework\DataConsumerBase.cs" />
     <Compile Include="DragDropFramework\DataProviderBase.cs" />
     <Compile Include="DragDropFramework\DefaultAdorner.cs" />
-    <Compile Include="DragDropFramework\FileDropConsumer.cs" />
     <Compile Include="DragDropFramework\IDataConsumer.cs" />
     <Compile Include="DragDropFramework\IDataProvider.cs" />
     <Compile Include="DragDropFramework\TreeViewData.cs" />

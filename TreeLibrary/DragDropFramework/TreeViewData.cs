@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -155,8 +156,9 @@ namespace TreeLibrary.DragDropFramework
             {
                 TContainer dragSourceContainer = dataProvider.SourceContainer as TContainer;
                 TreeNodeModel dragSourceObject = dataProvider.SourceObject as TreeNodeModel;
+
                 Debug.Assert(dragSourceContainer != null);
-                Debug.Assert(dragSourceObject != null);
+                //Debug.Assert(dragSourceObject != null);
 
                 TContainer dropContainer =
                     Utilities.FindParentControlIncludingMe<TContainer>(sender as DependencyObject);
@@ -175,6 +177,8 @@ namespace TreeLibrary.DragDropFramework
                         {
                             ((TreeHelper) ((Grid) e.OriginalSource).DataContext)?.NodeList.Add(
                                 dragSourceObject);
+                            e.Effects = DragDropEffects.Move;
+                            e.Handled = true;
                             return;
                         }
 
@@ -248,7 +252,11 @@ namespace TreeLibrary.DragDropFramework
         {
             try
             {
+                if (dragSourceObject == null)
+                    return false;
                 if ((originalSource as FrameworkElement) == null)
+                    return false;
+                if ((((FrameworkElement) originalSource).DataContext as TreeHelper)!=null)
                     return false;
 
                 var treeNodeModel = ((TreeNodeModel) ((FrameworkElement) originalSource).DataContext);

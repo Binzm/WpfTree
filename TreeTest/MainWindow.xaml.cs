@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -13,7 +14,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using TreeLibrary;
 using TreeLibrary.Converter;
-using TreeLibrary.Delegate;
 using TreeLibrary.DragDropFramework;
 using TreeLibrary.Model;
 using TreeLibrary.NodeItem;
@@ -21,6 +21,8 @@ using TreeLibrary.NodeItem.BaseItem;
 using TreeLibrary.NodeModel;
 using TreeTest.Item;
 using TreeTest.Model;
+using TreeTest.ProductAndCustomer;
+using Timer = System.Timers.Timer;
 
 namespace TreeTest
 {
@@ -33,14 +35,15 @@ namespace TreeTest
 
         private TreeControl _treeControl;
         private Timer _timer;
+        private Timer _beginOffLineTime;
+        private Timer _beginOnLineTime;
         private readonly Random _random = new Random();
 
-        private readonly FileDropConsumer _fileDropDataConsumer =
-            new FileDropConsumer(new string[]
-            {
-                "FileDrop",
-                "FileNameW"
-            });
+        private readonly AsyncStack _asyncStack;
+        private readonly Producer _producer;
+        private Consumer _consumer;
+        private Timer _consumerTimer;
+
 
         private readonly string[] _colorStrings = new string[]
         {
@@ -52,11 +55,17 @@ namespace TreeTest
             "Navy"
         };
 
+
         public MainWindow()
         {
             InitializeComponent();
 
             Compose();
+
+            _asyncStack = new AsyncStack();
+            _producer = new Producer(_asyncStack);
+
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             #region NodeOperator
 
@@ -72,18 +81,36 @@ namespace TreeTest
 
             #region Task 
 
-            Task.Delay(10000)
-                .ContinueWith(task => { _treeControl.TreeHelper.TreeAllNodels[1].TextBoxForeground = "red"; });
+            Task.Delay(5000)
+                .ContinueWith(
+                    task =>
+                    {
+                        _treeControl.TreeHelper.TreeAllNodels[1].TextBoxForeground = "red";
+                        if (_consumer == null)
+                            return;
+                    });
 
             #endregion
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        private void ExecuteConsumerExpense(object sender, ElapsedEventArgs e)
         {
-            _container?.Dispose();
-            base.OnClosing(e);
+            _consumer.RunConsume();
         }
 
+
+        private int GetNodeCount(IEnumerable<TreeNodeModel> nodeList, int counts)
+        {
+            int count = counts;
+            foreach (var nodeItem in nodeList)
+            {
+                count++;
+                if (nodeItem.SubNodes.Count > 0)
+                    count = GetNodeCount(nodeItem.SubNodes, count);
+            }
+
+            return count;
+        }
 
         //private void TreeNodeOperator(object sender, NotifyCollectionChangedEventArgs e)
         //{
@@ -102,6 +129,12 @@ namespace TreeTest
         //    }
 
         //}
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            _container?.Dispose();
+            base.OnClosing(e);
+        }
 
 
         private void Compose()
@@ -201,18 +234,21 @@ namespace TreeTest
         {
             _treeControl = null;
 
-            //container?.Dispose();
+            //container?.Dispose(); 
             TreeStackPanel.Children.Clear();
             if (_timer != null)
                 _timer.Stop();
+            if (_beginOffLineTime != null)
+                _beginOffLineTime.Stop();
+
+            if (_consumerTimer != null)
+                _consumerTimer.Stop();
         }
 
         private void ButtonBaseCreateTree_OnClick(object sender, RoutedEventArgs e)
         {
             if (_treeControl != null)
                 return;
-
-            //Compose();
 
             #region 加载自定义Model 和Item
 
@@ -319,7 +355,7 @@ namespace TreeTest
                     Name = "添加多个子集的节点"
                 }
             };
-            iteModels[1].AddSubNode(new ThreeLevelTreeNodeModel()
+            iteModels[1].AddSubNode(new ChannelsTreeNodeModel()
             {
                 Data = new DataModel {Id = "1"},
                 Name = "一级子节点"
@@ -355,23 +391,34 @@ namespace TreeTest
             TreeStackPanel.Children.Add(_treeControl);
 
             ToChangeTreeNodeProperty();
+
+            #region 消费者开始消费
+
+            _consumer = new Consumer(_asyncStack, _treeControl, this);
+            _consumerTimer = new Timer
+            {
+                Enabled = true,
+                Interval = 8
+            };
+            _consumerTimer.Start();
+            _consumerTimer.Elapsed += ExecuteConsumerExpense;
+
+            #endregion
         }
 
         private void DropDragHandler(bool bDrop, object sender, DragEventArgs e)
         {
-            TreeViewDataProvider<ItemsControl, TreeViewItem> dataProvider =
+            var dataProvider =
                 (TreeViewDataProvider<ItemsControl, TreeViewItem>) this.GetData(e);
 
-            TreeNodeModel dragSourceObject = dataProvider.SourceObject as TreeNodeModel;
             if (bDrop)
             {
-                var dropTarget = e.Source as TreeView;
                 var treeView = (TreeView) sender;
                 if (treeView != null)
                 {
-                    if (dropTarget != null && dropTarget.Name == "TextTreeDrag")
+                    if (e.Source is TreeView dropTarget && dropTarget.Name == "TextTreeDrag")
                     {
-                        if (dragSourceObject != null)
+                        if (dataProvider.SourceObject is TreeNodeModel dragSourceObject)
                         {
                             treeView.Items.Add(new TreeViewItem {Header = dragSourceObject.Name});
                             e.Handled = true;
@@ -390,9 +437,9 @@ namespace TreeTest
         {
             object data = null;
             string[] dataFormats = e.Data.GetFormats();
-            foreach (string dataFormat in dataFormats)
+            foreach (var dataFormat in dataFormats)
             {
-                foreach (string dataFormatString in this._dataFormats)
+                foreach (var dataFormatString in this._dataFormats)
                 {
                     if (dataFormat.Equals(dataFormatString))
                     {
@@ -515,7 +562,6 @@ namespace TreeTest
                 checkBoxElementFactory.SetValue(Control.IsTabStopProperty, false);
                 checkBoxElementFactory.SetValue(UIElement.FocusableProperty, false);
 
-
                 checkBoxElementFactory.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty,
                     new Binding(nameof(TreeNodeModel.IsChecked)));
                 checkBoxElementFactory.SetBinding(UIElement.VisibilityProperty,
@@ -539,7 +585,6 @@ namespace TreeTest
                     gridElementFactory.AppendChild(imageElementFactory);
                 }
 
-
                 var textBlockElementFactory = new FrameworkElementFactory(typeof(TextBlock));
                 textBlockElementFactory.SetValue(FrameworkElement.HorizontalAlignmentProperty,
                     HorizontalAlignment.Left);
@@ -556,7 +601,7 @@ namespace TreeTest
 
                 controlTemplate.VisualTree = gridElementFactory;
                 var setter = new Setter
-                    {Property = System.Windows.Controls.Control.TemplateProperty, Value = controlTemplate};
+                    {Property = TemplateProperty, Value = controlTemplate};
                 tempStyle.Setters.Add(setter);
 
                 resultStyles.Add(tempStyle);
@@ -575,7 +620,7 @@ namespace TreeTest
         {
             if (instance != null && !string.IsNullOrEmpty(propertyName))
             {
-                var findPropertyInfo = (instance as Type).GetProperty(propertyName);
+                var findPropertyInfo = ((Type) instance)?.GetProperty(propertyName);
                 return (findPropertyInfo != null);
             }
 
@@ -622,6 +667,62 @@ namespace TreeTest
                         });
                     });
             }
+        }
+
+        private void ButtonNodeOffLine_OnClick(object sender, RoutedEventArgs e)
+        {
+            _beginOffLineTime = new Timer
+            {
+                Enabled = true,
+                Interval = 10
+            };
+            _beginOffLineTime.Start();
+            _beginOffLineTime.Elapsed += NodeOffLine;
+
+            BeginOffLineButton.IsEnabled = false;
+        }
+
+        private void NodeOffLine(object sender, ElapsedEventArgs e)
+        {
+            new Thread(() => { _producer.RunProduction(false); }).Start();
+        }
+
+        private void ButtonNodeOffLineEnd_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (_beginOffLineTime == null)
+                return;
+            _beginOffLineTime.Enabled = false;
+            _beginOffLineTime.Stop();
+
+            BeginOffLineButton.IsEnabled = true;
+        }
+
+        private void ButtonNodeOnLine_OnClick(object sender, RoutedEventArgs e)
+        {
+            _beginOnLineTime = new Timer
+            {
+                Enabled = true,
+                Interval = 5
+            };
+            _beginOnLineTime.Start();
+            _beginOnLineTime.Elapsed += NodeOnLine;
+
+            BeginOnLineButton.IsEnabled = false;
+        }
+
+        private void NodeOnLine(object sender, ElapsedEventArgs e)
+        {
+            new Thread(() => { _producer.RunProduction(true); }).Start();
+        }
+
+        private void ButtonNodeOnLineEnd_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (_beginOnLineTime == null)
+                return;
+            _beginOnLineTime.Enabled = false;
+            _beginOnLineTime.Stop();
+
+            BeginOnLineButton.IsEnabled = true;
         }
     }
 }
