@@ -223,7 +223,7 @@ namespace TreeLibrary.DragDropFramework
                 return;
             if ((this._dragDropObject != null) && !this._dragInProgress &&
                 this._dragDropObject.IsSupportedContainerAndObject(false, sender,
-                    (e.OriginalSource as TextBlock).DataContext, e.OriginalSource))
+                    ((TextBlock)e.OriginalSource).DataContext, e.OriginalSource))
             {
                 Point currentPosition = e.GetPosition(sender as IInputElement);
                 if (((Math.Abs(currentPosition.X - this._startPosition.X) >
