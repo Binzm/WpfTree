@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace TreeTest.ProductAndCustomer
 {
-     public class Producer
+    public class Producer
     {
         private readonly AsyncStack _asyncStack=null;
 
@@ -17,7 +12,6 @@ namespace TreeTest.ProductAndCustomer
 
         public void RunProduction(bool handler)
         {
-            
                 _asyncStack.Push(handler);
         }
 

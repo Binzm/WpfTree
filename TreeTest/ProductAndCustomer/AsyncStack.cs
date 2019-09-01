@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 
 namespace TreeTest.ProductAndCustomer
@@ -46,9 +45,9 @@ namespace TreeTest.ProductAndCustomer
                     {
                         Monitor.Wait(this);
                     }
-                    catch (Exception ex)
+                    catch /*(Exception ex)*/
                     {
-                        Console.WriteLine(ex.Message);
+                        //Console.WriteLine(ex.Message);
                     }
                 }
 

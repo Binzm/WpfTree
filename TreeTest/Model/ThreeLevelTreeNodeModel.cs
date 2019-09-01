@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using TreeLibrary.Model;
+﻿using TreeLibrary.Model;
 
 namespace TreeTest.Model
 {

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Composition;
-using System.Windows;
+﻿using System.Windows;
 using TreeLibrary.NodeItem.BaseItem;
 
 namespace TreeTest.Item

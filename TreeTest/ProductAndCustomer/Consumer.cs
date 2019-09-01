@@ -18,8 +18,8 @@ namespace TreeTest.ProductAndCustomer
 
         public Consumer(AsyncStack asyncStack, TreeControl treeControl, Window window)
         {
-            this._asyncStack = asyncStack;
-            this._treeControl = treeControl;
+            _asyncStack = asyncStack;
+            _treeControl = treeControl;
             _window = window;
         }
 
@@ -27,7 +27,7 @@ namespace TreeTest.ProductAndCustomer
         {
             if(!_asyncStack.IsHaveProduction())
                 return;
-            lock (this)
+            lock (_treeControl)
             {
                 var runMethodOnLineOrOffLineBool = _asyncStack.Pop();
                 if (runMethodOnLineOrOffLineBool)
