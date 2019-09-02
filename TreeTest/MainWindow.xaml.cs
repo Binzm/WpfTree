@@ -156,7 +156,7 @@ namespace TreeTest
             var addNodeModel = new TwosTreeNodeModel()
             {
                 Data = new DataModel {Id = _random.Next(100, 100000).ToString()},
-                Name = "在选中节点下添加的子节点" + _random.Next(100, 100000).ToString()
+                Name = "在选中节点下添加的子节点" + _random.Next(100, 100000)
             };
             Application.Current.Dispatcher.Invoke(() =>
             {
